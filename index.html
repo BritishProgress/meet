@@ -994,7 +994,7 @@
       <div class="stage2-right" id="stage2Right">
         <iframe class="booking-iframe" id="bookingIframe" src="about:blank"></iframe>
       </div>
-      <a class="book-btn hidden" id="mailtoBtn" href="#" target="_blank" rel="noopener">Request Meeting via Email</a>
+      <a class="book-btn hidden" id="mailtoBtn" href="#">Request Meeting via Email</a>
   </div>
 
   <footer>
@@ -1314,16 +1314,8 @@
       else if (selectedMethod === 'call' && selectedCallType === 'video') methodText = 'video call';
 
       const subject = `Meeting Request — ${methodText} with ${nameList}`;
-      const body = `Hi,
-
-I'd like to request a ${methodText} with ${nameList}.
-
-My preferred times are:
-- [Please add your preferred date/time options here]
-
-Thank you`;
-
-      return `mailto:office@britishprogress.org?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      const body = `Hi,\n\nI'd like to request a ${methodText} with ${nameList}.\n\nMy preferred times are:\n- [Please add your preferred date/time options here]\n\nThank you`;
+      return `https://mail.google.com/mail/?view=cm&to=office@britishprogress.org&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     }
 
     function updateOfficeBtn() {
@@ -1489,10 +1481,10 @@ Thank you`;
       e.stopPropagation();
     });
 
-    // Mailto fallback — explicitly open mailto in case <a> doesn't trigger
+    // Open Gmail compose in new tab
     document.getElementById('mailtoBtn').addEventListener('click', (e) => {
       e.preventDefault();
-      window.location.href = e.currentTarget.href;
+      window.open(e.currentTarget.href, '_blank', 'width=680,height=700');
     });
 
     document.addEventListener('click', () => {
