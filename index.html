@@ -1443,12 +1443,12 @@
       };
     }
 
-    function buildGmailUrl(parts) {
+    function buildEmailUrl(parts) {
       return `https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(parts.to)}&su=${encodeURIComponent(parts.subject)}&body=${encodeURIComponent(parts.body)}`;
     }
 
     function buildEmailDraftSrcdoc(parts) {
-      const gmailUrl = buildGmailUrl(parts);
+      const emailUrl = buildEmailUrl(parts);
       const bodyHtml = parts.body.replace(/\n/g, '<br>');
       return '<!DOCTYPE html>' +
         '<html><head><style>' +
@@ -1472,7 +1472,7 @@
         '<\/div>' +
         '<div class="draft-body">' + bodyHtml + '<\/div>' +
         '<div class="draft-footer">' +
-        '<a class="send-btn" href="' + gmailUrl + '" target="_blank">Send Email<\/a>' +
+        '<a class="send-btn" href="' + emailUrl + '" target="_blank">Send Email<\/a>' +
         '<span class="hint">Opens a pre-filled email draft<\/span>' +
         '<\/div>' +
         '<\/div>' +

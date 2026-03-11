@@ -6,7 +6,7 @@ A static meeting booking page for the Centre for British Progress core team. Hos
 
 1. **Select people** — visitors pick 1-3 team members from a grid of 14 core staff
 2. **Choose a method** — In-person (80 Strand office or another location) or Call (video call / phone call). For 2+ people, only video call is available (no phone option)
-3. **Book or email** — if a Google Calendar booking page exists for that combination, it loads in an embedded iframe. Otherwise, a pre-filled email draft is shown with a "Send Email" button that opens Gmail compose
+3. **Book or email** — if a Google Calendar booking page exists for that combination, it loads in an embedded iframe. Otherwise, a pre-filled email draft is shown with a "Send Email" button that opens the user's email client
 
 ## URL scheme
 
