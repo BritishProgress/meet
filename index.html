@@ -217,7 +217,7 @@
       border-radius: 10px;
       padding: 1rem;
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
       user-select: none;
       -webkit-user-select: none;
       display: flex;
@@ -230,9 +230,16 @@
       background: #d4e6fb;
     }
 
+    .max-reached .member-card:not(.selected) {
+      background: #f5f4ef;
+      border-color: #ddd;
+      opacity: 0.6;
+    }
+
     .max-reached .member-card:not(.selected):hover {
+      background: #eae9e3;
       border-color: #ccc;
-      background: #f0f0f0;
+      opacity: 0.7;
       cursor: not-allowed;
     }
 
@@ -240,6 +247,11 @@
       border-color: #0B4938;
       background: #e6fce9;
       box-shadow: 0 0 0 1px #0B4938;
+    }
+
+    .member-card.suggested {
+      border-color: #FE9F1C;
+      background: #FFF3D0;
     }
 
     .member-card .avatar {
@@ -995,6 +1007,37 @@
 
     const selected = new Set();
 
+    // Suggestion rules based on org chart reporting lines
+    const suggestions = {
+      0: [1, 3, 6, 8, 13, 10, 5],   // David → Julia, Pedro, Ed, Kane, Matthew G, Ezra, Freddie
+      1: [0, 2, 7, 4],            // Julia → David, Maxx, Alys, Andrew
+      2: [1, 12],                 // Maxx → Julia, Esther
+      3: [0, 11],                     // Pedro → David, Matthew S
+      4: [1],                          // Andrew → Julia
+      5: [0],                          // Freddie → David
+      6: [0],                          // Ed → David
+      7: [1],                          // Alys → Julia
+      8: [0],                          // Kane → David
+      9: [1, 2],                       // Tom → Julia, Maxx
+      10: [0],                         // Ezra → David
+      11: [3],                      // Matthew S → Pedro
+      12: [2],                         // Esther → Maxx
+      13: [0],                         // Matthew G → David
+    };
+
+    function getSuggested() {
+      const suggested = new Set();
+      if (selected.size >= 3) return suggested;
+      selected.forEach(i => {
+        if (suggestions[i]) {
+          suggestions[i].forEach(s => {
+            if (!selected.has(s)) suggested.add(s);
+          });
+        }
+      });
+      return suggested;
+    }
+
     function getSlug(index) {
       const member = team[index];
       const firstName = member.first.toLowerCase();
@@ -1045,6 +1088,13 @@
       const urlDisplay = document.getElementById("generatedUrl");
       const btn = document.getElementById("bookBtn");
 
+      // Update suggested classes
+      const suggested = getSuggested();
+      [...grid.children].forEach(card => {
+        const i = parseInt(card.dataset.index);
+        card.classList.toggle('suggested', suggested.has(i) && !selected.has(i));
+      });
+
       if (selected.size === 0) {
         bar.classList.add("hidden");
         grid.classList.remove("max-reached");
@@ -1056,7 +1106,7 @@
         document.getElementById('locationOptions').classList.remove('active');
         document.getElementById('callOptions').classList.remove('active');
         btn.classList.add('hidden');
-        urlDisplay.textContent = '';
+        urlDisplay.classList.remove('visible');
         return;
       }
 
@@ -1140,6 +1190,9 @@
       });
     });
 
+    const copyIconSvg = '<svg class="copy-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 5.5V3.5C10.5 2.67 9.83 2 9 2H3.5C2.67 2 2 2.67 2 3.5V9C2 9.83 2.67 10.5 3.5 10.5H5.5" stroke="currentColor" stroke-width="1.5"/></svg>';
+    const checkIconSvg = '<svg class="copy-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8.5L6.5 12L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
     function updateBookBtn() {
       const bookBtn = document.getElementById('bookBtn');
       const urlDisplay = document.getElementById('generatedUrl');
@@ -1161,9 +1214,6 @@
         urlDisplay.classList.remove('visible');
       }
     }
-
-    const copyIconSvg = '<svg class="copy-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 5.5V3.5C10.5 2.67 9.83 2 9 2H3.5C2.67 2 2 2.67 2 3.5V9C2 9.83 2.67 10.5 3.5 10.5H5.5" stroke="currentColor" stroke-width="1.5"/></svg>';
-    const checkIconSvg = '<svg class="copy-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8.5L6.5 12L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
     function copyUrl() {
       const urlDisplay = document.getElementById('generatedUrl');
@@ -1347,6 +1397,7 @@
     team.forEach((member, index) => {
       const card = document.createElement("div");
       card.className = "member-card";
+      card.dataset.index = index;
       card.innerHTML = `<img class="avatar" src="${imgBase}${member.img}" alt="${member.first} ${member.last}" loading="lazy"><div class="info"><div class="name">${member.first} ${member.last}</div><div class="role">${member.role}</div></div>`;
       card.addEventListener("click", () => {
         if (selected.has(index)) {
@@ -1363,9 +1414,48 @@
           setTimeout(() => msg.classList.remove("visible"), 2000);
         }
         update();
+        reorderGrid();
       });
       grid.appendChild(card);
     });
+
+    function reorderGrid() {
+      const cards = [...grid.children];
+      const suggested = getSuggested();
+      // Capture current positions
+      const oldRects = new Map();
+      cards.forEach(card => oldRects.set(card, card.getBoundingClientRect()));
+
+      // Set CSS order: selected first, then suggested, then others
+      cards.forEach(card => {
+        const i = parseInt(card.dataset.index);
+        if (selected.has(i)) card.style.order = i;
+        else if (suggested.has(i)) card.style.order = 50 + i;
+        else card.style.order = 100 + i;
+      });
+
+      // FLIP animate
+      requestAnimationFrame(() => {
+        cards.forEach(card => {
+          const oldRect = oldRects.get(card);
+          const newRect = card.getBoundingClientRect();
+          const dx = oldRect.left - newRect.left;
+          const dy = oldRect.top - newRect.top;
+          if (dx === 0 && dy === 0) return;
+
+          card.style.transform = `translate(${dx}px, ${dy}px)`;
+          card.style.transition = 'none';
+
+          requestAnimationFrame(() => {
+            card.style.transition = 'transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1)';
+            card.style.transform = '';
+            card.addEventListener('transitionend', () => {
+              card.style.transition = '';
+            }, { once: true });
+          });
+        });
+      });
+    }
 
     // Restore state from URL hash on load
     (function restoreFromHash() {
