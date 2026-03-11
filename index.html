@@ -286,9 +286,13 @@
       transition: opacity 0.2s ease;
     }
 
+    .team-grid.hidden,
+    .page-intro.hidden {
+      display: none;
+    }
+
     .booking-bar.hidden {
-      opacity: 0;
-      pointer-events: none;
+      display: none;
     }
 
     .selection-summary {
@@ -305,11 +309,282 @@
     }
 
     .generated-url {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: #093D77;
       word-break: break-all;
-      text-align: center;
       font-family: 'SF Mono', 'Fira Code', monospace;
+      background: #fff;
+      border: 1.5px solid #e5e0cc;
+      border-radius: 20px;
+      padding: 0 1rem;
+      height: 36px;
+      cursor: pointer;
+      transition: border-color 0.15s ease, background 0.15s ease;
+      display: none;
+      max-width: 100%;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .generated-url.visible {
+      display: flex;
+    }
+
+    .generated-url .url-text {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .generated-url:hover {
+      border-color: #093D77;
+      background: #f0f6ff;
+    }
+
+    .generated-url .copy-icon {
+      flex-shrink: 0;
+      color: #283131;
+      opacity: 0.35;
+      transition: opacity 0.15s ease;
+    }
+
+    .generated-url:hover .copy-icon {
+      opacity: 0.7;
+    }
+
+    .generated-url.copied {
+      animation: copyFade 1.8s ease forwards;
+    }
+
+    @keyframes copyFade {
+      0% { background: #e6fce9; border-color: #0B4938; }
+      35% { background: #e6fce9; border-color: #0B4938; }
+      100% { background: #fff; border-color: #e5e0cc; }
+    }
+
+    .method-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .method-step h3 {
+      font-size: 0.9rem;
+      font-weight: 550;
+      color: #283131;
+      margin-bottom: 0.25rem;
+    }
+
+    .method-options {
+      display: flex;
+      gap: 0.5rem;
+      width: 100%;
+      align-items: flex-start;
+    }
+
+    .method-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .method-btn {
+      padding: 0.6rem 0.75rem;
+      border: 2px solid #e5e0cc;
+      border-radius: 8px;
+      background: #fff;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 550;
+      color: #283131;
+      text-align: center;
+      transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+      font-family: inherit;
+    }
+
+    .method-btn:hover {
+      border-color: #093D77;
+      background: #d4e6fb;
+    }
+
+    .method-btn.selected {
+      border-color: #0B4938;
+      background: #e6fce9;
+      box-shadow: 0 0 0 1px #0B4938;
+    }
+
+    .sub-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      width: 100%;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .sub-options.active {
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .sub-btn {
+      padding: 0.6rem 0.75rem;
+      border: 2px solid #e5e0cc;
+      border-radius: 8px;
+      background: #fff;
+      cursor: pointer;
+      font-size: 0.8rem;
+      color: #283131;
+      text-align: center;
+      transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+      font-family: inherit;
+    }
+
+    .sub-btn-with-info {
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+
+    .sub-btn-with-info .sub-btn {
+      width: 100%;
+    }
+
+    .sub-btn-with-info .info-icon {
+      position: absolute;
+      left: calc(100% + 6px);
+    }
+
+    .info-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #283131;
+      opacity: 0.4;
+      text-decoration: none;
+      transition: opacity 0.15s ease;
+      flex-shrink: 0;
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .info-icon:hover {
+      opacity: 0.8;
+    }
+
+    .info-bubble {
+      display: none;
+      position: absolute;
+      left: calc(100% + 20px);
+      top: 50%;
+      transform: translateY(-50%);
+      background: #fff;
+      border: 1px solid #e5e0cc;
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      font-size: 0.78rem;
+      line-height: 1.5;
+      color: #283131;
+      text-align: left;
+      width: 340px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      z-index: 10;
+    }
+
+    .info-bubble.active {
+      display: block;
+    }
+
+    .info-bubble-arrow {
+      position: absolute;
+      left: -8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      border-right: 8px solid #e5e0cc;
+    }
+
+    .info-bubble-arrow::after {
+      content: '';
+      position: absolute;
+      left: 1.5px;
+      top: -7px;
+      width: 0;
+      height: 0;
+      border-top: 7px solid transparent;
+      border-bottom: 7px solid transparent;
+      border-right: 7px solid #fff;
+    }
+
+    .info-bubble-close {
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      background: none;
+      border: none;
+      font-size: 1.1rem;
+      color: #283131;
+      opacity: 0.4;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .info-bubble-close:hover {
+      opacity: 0.8;
+    }
+
+    .info-bubble p {
+      margin-bottom: 0.4rem;
+    }
+
+    .info-bubble a {
+      color: #283131;
+      text-decoration: underline;
+      text-decoration-color: #FE9F1C;
+      text-underline-offset: 2px;
+    }
+
+    .info-bubble ul {
+      list-style: none;
+      margin: 0.3rem 0 0.5rem;
+      padding: 0;
+    }
+
+    .info-bubble ul li {
+      padding: 0.15rem 0;
+    }
+
+    .info-box-transport {
+      margin-bottom: 0.1rem !important;
+      opacity: 0.6;
+    }
+
+    .info-box-map {
+      font-weight: 550;
+      font-size: 0.75rem;
+    }
+
+    .sub-btn:hover {
+      border-color: #093D77;
+      background: #d4e6fb;
+    }
+
+    .sub-btn.selected {
+      border-color: #0B4938;
+      background: #e6fce9;
+      box-shadow: 0 0 0 1px #0B4938;
     }
 
     .book-btn {
@@ -324,6 +599,90 @@
       cursor: pointer;
       text-decoration: none;
       transition: background 0.15s ease;
+    }
+
+    .stage2 {
+      width: 100%;
+      max-width: 860px;
+      padding: 1rem 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      flex: 1;
+    }
+
+    .selected-people {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .selected-person {
+      flex: 0 1 calc((100% - 1.5rem) / 3);
+    }
+
+    .selected-person {
+      background: #e6fce9;
+      border: 2px solid #0B4938;
+      border-radius: 10px;
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 0 0 1px #0B4938;
+    }
+
+    .selected-person img {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: #e5e0cc;
+    }
+
+    .selected-person .info {
+      min-width: 0;
+    }
+
+    .selected-person .name {
+      font-weight: 550;
+      font-size: 0.95rem;
+      margin-bottom: 0.2rem;
+      color: #283131;
+    }
+
+    .selected-person .role {
+      font-size: 0.8rem;
+      line-height: 1.3;
+      color: #283131;
+      opacity: 0.55;
+    }
+
+    .stage2.hidden {
+      display: none;
+    }
+
+    .book-btn.hidden {
+      display: none;
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: #283131;
+      opacity: 0.5;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-family: inherit;
+      padding: 0;
+      transition: opacity 0.15s ease;
+    }
+
+    .back-btn:hover {
+      opacity: 0.8;
     }
 
     .book-btn:hover {
@@ -538,18 +897,62 @@
     </nav>
   </div>
 
-  <div class="page-intro">
+  <div class="page-intro" id="pageIntro">
     <h1>Book a Meeting</h1>
     <p>Select one or more team members to generate a booking link.</p>
   </div>
 
   <div class="team-grid" id="teamGrid"></div>
 
+  <!-- Stage 1: People selection bar -->
   <div class="booking-bar hidden" id="bookingBar">
     <div class="max-msg" id="maxMsg">Maximum of 3 people per meeting</div>
     <div class="selection-summary" id="selectionSummary"></div>
-    <div class="generated-url" id="generatedUrl"></div>
-    <a class="book-btn" id="bookBtn" href="#" target="_blank" rel="noopener">Book Meeting</a>
+    <button class="book-btn" id="continueBtn">Continue</button>
+  </div>
+
+  <!-- Stage 2: Method selection -->
+  <div class="stage2 hidden" id="stage2">
+    <div class="selected-people" id="selectedPeople"></div>
+    <button class="back-btn" id="backBtn">&larr; Change people</button>
+
+    <div class="method-step">
+      <div class="method-options">
+        <div class="method-col">
+          <button class="method-btn" data-method="in-person">In-person</button>
+          <div class="sub-options" id="locationOptions">
+            <div class="sub-btn-with-info">
+              <button class="sub-btn" data-location="office" id="officeBtn">Meet at 80 Strand</button>
+              <button type="button" class="info-icon" id="officeInfoToggle" aria-label="More info about 80 Strand"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><text x="8" y="12" text-anchor="middle" font-size="11" font-weight="600" fill="currentColor">?</text></svg></button>
+              <div class="info-bubble" id="officeInfoBox">
+                <div class="info-bubble-arrow"></div>
+                <button type="button" class="info-bubble-close" id="officeInfoClose">&times;</button>
+                <p><strong>Our Office</strong></p>
+                <p>Meet at the Centre for British Progress office:<br><strong><a href="https://maps.app.goo.gl/FVswKPcvaDPk2D5GA" target="_blank" rel="noopener">80 Strand, London, WC2R 0RL</a></strong></p>
+                <p class="info-box-transport">Nearest tube stations:</p>
+                <ul>
+                  <li><strong>Charing Cross</strong> (4 min) 🟤⚫</li>
+                  <li><strong>Embankment</strong> (4 min) 🟢🟡🟤⚫</li>
+                  <li><strong>Temple</strong> (5 min) 🟢🟡</li>
+                  <li><strong>Covent Garden</strong> (7 min) 🔵</li>
+                </ul>
+              </div>
+            </div>
+            <button class="sub-btn" data-location="other">Another location</button>
+          </div>
+        </div>
+        <div class="method-col">
+          <button class="method-btn" data-method="call">Call</button>
+          <div class="sub-options" id="callOptions">
+            <button class="sub-btn" data-calltype="video">Video call</button>
+            <button class="sub-btn" data-calltype="phone">Phone call</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="generated-url" id="generatedUrl" onclick="copyUrl()"><span class="url-text"></span><svg class="copy-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 5.5V3.5C10.5 2.67 9.83 2 9 2H3.5C2.67 2 2 2.67 2 3.5V9C2 9.83 2.67 10.5 3.5 10.5H5.5" stroke="currentColor" stroke-width="1.5"/></svg></div>
+    <a class="book-btn hidden" id="bookBtn" href="#" target="_blank" rel="noopener">Book Meeting</a>
   </div>
 
   <footer>
@@ -606,9 +1009,26 @@
     function buildUrl() {
       const slugs = [...selected].sort((a, b) => a - b).map(getSlug);
       if (slugs.length === 0) return "";
-      if (slugs.length === 1) return `https://meet-${slugs[0]}.britishprogress.org/`;
-      const last = slugs.pop();
-      return `https://meet-${slugs.join("-")}-and-${last}.britishprogress.org/`;
+
+      let peoplePart;
+      if (slugs.length === 1) peoplePart = slugs[0];
+      else {
+        const last = slugs.pop();
+        peoplePart = `${slugs.join("-")}-and-${last}`;
+      }
+
+      let methodSuffix = "";
+      if (selectedMethod === 'in-person' && selectedLocation === 'office') {
+        methodSuffix = "-80-strand";
+      } else if (selectedMethod === 'in-person' && selectedLocation === 'other') {
+        methodSuffix = "-in-person";
+      } else if (selectedMethod === 'call' && selectedCallType === 'phone') {
+        methodSuffix = "-phone-call";
+      } else if (selectedMethod === 'call' && selectedCallType === 'video') {
+        methodSuffix = "-video-call";
+      }
+
+      return `https://meet-${peoplePart}${methodSuffix}.britishprogress.org/`;
     }
 
     function buildSummary() {
@@ -628,17 +1048,291 @@
       if (selected.size === 0) {
         bar.classList.add("hidden");
         grid.classList.remove("max-reached");
+        selectedMethod = null;
+        selectedLocation = null;
+        selectedCallType = null;
+        document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('selected'));
+        document.querySelectorAll('.sub-btn').forEach(b => b.classList.remove('selected'));
+        document.getElementById('locationOptions').classList.remove('active');
+        document.getElementById('callOptions').classList.remove('active');
+        btn.classList.add('hidden');
+        urlDisplay.textContent = '';
         return;
       }
 
       bar.classList.remove("hidden");
       summary.innerHTML = buildSummary();
-      const url = buildUrl();
-      urlDisplay.textContent = url;
-      btn.href = url;
+      updateOfficeBtn();
+      updateBookBtn();
 
       grid.classList.toggle("max-reached", selected.size >= 3);
     }
+
+    let selectedMethod = null;
+    let selectedLocation = null;
+    let selectedCallType = null;
+
+    // Method selection
+    document.querySelectorAll('.method-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const locationOpts = document.getElementById('locationOptions');
+        const callOpts = document.getElementById('callOptions');
+
+        // Toggle off if already selected
+        if (selectedMethod === btn.dataset.method) {
+          btn.classList.remove('selected');
+          selectedMethod = null;
+          selectedLocation = null;
+          selectedCallType = null;
+          document.querySelectorAll('.sub-btn').forEach(b => b.classList.remove('selected'));
+          locationOpts.classList.remove('active');
+          callOpts.classList.remove('active');
+          updateBookBtn();
+          return;
+        }
+
+        document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        selectedMethod = btn.dataset.method;
+
+        // Reset sub-selections
+        selectedLocation = null;
+        selectedCallType = null;
+        document.querySelectorAll('.sub-btn').forEach(b => b.classList.remove('selected'));
+
+        if (selectedMethod === 'in-person') {
+          locationOpts.classList.add('active');
+          callOpts.classList.remove('active');
+        } else if (selectedMethod === 'call') {
+          callOpts.classList.add('active');
+          locationOpts.classList.remove('active');
+        }
+        updateBookBtn();
+      });
+    });
+
+    // Sub-option selection (location + call type)
+    document.querySelectorAll('#locationOptions .sub-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (selectedLocation === btn.dataset.location) {
+          btn.classList.remove('selected');
+          selectedLocation = null;
+        } else {
+          document.querySelectorAll('#locationOptions .sub-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          selectedLocation = btn.dataset.location;
+        }
+        updateBookBtn();
+      });
+    });
+
+    document.querySelectorAll('#callOptions .sub-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (selectedCallType === btn.dataset.calltype) {
+          btn.classList.remove('selected');
+          selectedCallType = null;
+        } else {
+          document.querySelectorAll('#callOptions .sub-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          selectedCallType = btn.dataset.calltype;
+        }
+        updateBookBtn();
+      });
+    });
+
+    function updateBookBtn() {
+      const bookBtn = document.getElementById('bookBtn');
+      const urlDisplay = document.getElementById('generatedUrl');
+      const urlText = urlDisplay.querySelector('.url-text');
+      const ready = selectedMethod && (
+        (selectedMethod === 'in-person' && selectedLocation) ||
+        (selectedMethod === 'call' && selectedCallType)
+      );
+      if (ready && selected.size > 0) {
+        const url = buildUrl();
+        urlText.textContent = url;
+        urlDisplay.classList.add('visible');
+        urlDisplay.classList.remove('copied');
+        urlDisplay.querySelector('.copy-icon').outerHTML = copyIconSvg;
+        bookBtn.href = url;
+        bookBtn.classList.remove('hidden');
+      } else {
+        bookBtn.classList.add('hidden');
+        urlDisplay.classList.remove('visible');
+      }
+    }
+
+    const copyIconSvg = '<svg class="copy-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 5.5V3.5C10.5 2.67 9.83 2 9 2H3.5C2.67 2 2 2.67 2 3.5V9C2 9.83 2.67 10.5 3.5 10.5H5.5" stroke="currentColor" stroke-width="1.5"/></svg>';
+    const checkIconSvg = '<svg class="copy-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8.5L6.5 12L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+    function copyUrl() {
+      const urlDisplay = document.getElementById('generatedUrl');
+      const urlText = urlDisplay.querySelector('.url-text').textContent;
+      navigator.clipboard.writeText(urlText).then(() => {
+        urlDisplay.classList.remove('copied');
+        urlDisplay.offsetHeight; // reset animation if clicked again
+        urlDisplay.classList.add('copied');
+        urlDisplay.querySelector('.copy-icon').outerHTML = checkIconSvg;
+        urlDisplay.addEventListener('animationend', () => {
+          urlDisplay.classList.remove('copied');
+          urlDisplay.querySelector('.copy-icon').outerHTML = copyIconSvg;
+        }, { once: true });
+      });
+    }
+
+    function updateOfficeBtn() {
+      // Static text, no need to update per selection
+    }
+
+    // Stage transitions
+    document.getElementById('continueBtn').addEventListener('click', () => {
+      // Capture absolute page positions of selected cards (viewport rect + scroll)
+      const selectedCards = [...selected].sort((a, b) => a - b);
+      const startPositions = {};
+      const scrollY = window.scrollY;
+      selectedCards.forEach(i => {
+        const rect = grid.children[i].getBoundingClientRect();
+        startPositions[i] = { top: rect.top + scrollY, left: rect.left, width: rect.width, height: rect.height };
+      });
+
+      // Build stage 2 cards
+      const peopleContainer = document.getElementById('selectedPeople');
+      peopleContainer.innerHTML = '';
+      selectedCards.forEach(i => {
+        const m = team[i];
+        const div = document.createElement('div');
+        div.className = 'selected-person';
+        div.dataset.index = i;
+        div.innerHTML = `<img src="${imgBase}${m.img}" alt="${m.first} ${m.last}"><div class="info"><div class="name">${m.first} ${m.last}</div><div class="role">${m.role}</div></div>`;
+        peopleContainer.appendChild(div);
+      });
+
+      // Switch stages
+      document.getElementById('bookingBar').classList.add('hidden');
+      document.getElementById('teamGrid').classList.add('hidden');
+      document.getElementById('stage2').classList.remove('hidden');
+      document.querySelector('#pageIntro p').textContent = 'How would you like to meet?';
+      window.scrollTo({ top: 0 });
+
+      // Update URL hash
+      const slugs = selectedCards.map(getSlug);
+      if (slugs.length === 1) history.replaceState(null, '', '#' + slugs[0]);
+      else {
+        const last = slugs.pop();
+        history.replaceState(null, '', '#' + slugs.join('-') + '-and-' + last);
+      }
+
+      // FLIP: compare absolute page positions (scroll-independent)
+      requestAnimationFrame(() => {
+        const newCards = peopleContainer.querySelectorAll('.selected-person');
+        newCards.forEach(card => {
+          const i = parseInt(card.dataset.index);
+          const endRect = card.getBoundingClientRect();
+          const endTop = endRect.top + window.scrollY;
+          const start = startPositions[i];
+          const dx = start.left - endRect.left;
+          const dy = start.top - endTop;
+          const sx = start.width / endRect.width;
+          const sy = start.height / endRect.height;
+
+          card.style.transform = `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`;
+          card.style.transformOrigin = 'top left';
+          card.style.transition = 'none';
+
+          requestAnimationFrame(() => {
+            card.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)';
+            card.style.transform = 'translate(0, 0) scale(1, 1)';
+            card.addEventListener('transitionend', () => {
+              card.style.transform = '';
+              card.style.transition = '';
+              card.style.transformOrigin = '';
+            }, { once: true });
+          });
+        });
+      });
+    });
+
+    document.getElementById('backBtn').addEventListener('click', () => {
+      const peopleContainer = document.getElementById('selectedPeople');
+      const stage2Cards = peopleContainer.querySelectorAll('.selected-person');
+
+      // Capture absolute page positions of stage 2 cards
+      const startPositions = {};
+      const scrollY = window.scrollY;
+      stage2Cards.forEach(card => {
+        const i = parseInt(card.dataset.index);
+        const rect = card.getBoundingClientRect();
+        startPositions[i] = { top: rect.top + scrollY, left: rect.left, width: rect.width, height: rect.height };
+      });
+
+      // Switch stages
+      document.getElementById('stage2').classList.add('hidden');
+      document.getElementById('teamGrid').classList.remove('hidden');
+      document.getElementById('bookingBar').classList.remove('hidden');
+      document.querySelector('#pageIntro p').textContent = 'Select one or more team members to generate a booking link.';
+      history.replaceState(null, '', window.location.pathname);
+
+      // Reset method selections
+      selectedMethod = null;
+      selectedLocation = null;
+      selectedCallType = null;
+      document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('selected'));
+      document.querySelectorAll('.sub-btn').forEach(b => b.classList.remove('selected'));
+      document.getElementById('locationOptions').classList.remove('active');
+      document.getElementById('callOptions').classList.remove('active');
+      document.getElementById('bookBtn').classList.add('hidden');
+      document.getElementById('generatedUrl').classList.remove('visible');
+
+      window.scrollTo({ top: 0 });
+
+      // FLIP: compare absolute page positions
+      requestAnimationFrame(() => {
+        [...selected].forEach(i => {
+          const card = grid.children[i];
+          const endRect = card.getBoundingClientRect();
+          const endTop = endRect.top + window.scrollY;
+          const start = startPositions[i];
+          if (!start) return;
+          const dx = start.left - endRect.left;
+          const dy = start.top - endTop;
+          const sx = start.width / endRect.width;
+          const sy = start.height / endRect.height;
+
+          card.style.transform = `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`;
+          card.style.transformOrigin = 'top left';
+          card.style.transition = 'none';
+
+          requestAnimationFrame(() => {
+            card.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)';
+            card.style.transform = 'translate(0, 0) scale(1, 1)';
+            card.addEventListener('transitionend', () => {
+              card.style.transform = '';
+              card.style.transition = '';
+              card.style.transformOrigin = '';
+            }, { once: true });
+          });
+        });
+      });
+    });
+
+    // Office info toggle
+    document.getElementById('officeInfoToggle').addEventListener('click', (e) => {
+      e.stopPropagation();
+      document.getElementById('officeInfoBox').classList.toggle('active');
+    });
+
+    document.getElementById('officeInfoClose').addEventListener('click', (e) => {
+      e.stopPropagation();
+      document.getElementById('officeInfoBox').classList.remove('active');
+    });
+
+    document.getElementById('officeInfoBox').addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+
+    document.addEventListener('click', () => {
+      document.getElementById('officeInfoBox').classList.remove('active');
+    });
 
     // Burger menu toggle
     const burger = document.getElementById('burgerMenu');
@@ -672,6 +1366,72 @@
       });
       grid.appendChild(card);
     });
+
+    // Restore state from URL hash on load
+    (function restoreFromHash() {
+      const hash = window.location.hash.slice(1);
+      if (!hash) return;
+
+      // Parse slugs: split on "-and-" first, then split remaining on "-"
+      // e.g. "david-julia-and-maxx" → ["david", "julia", "maxx"]
+      // e.g. "matthew-s-and-matthew-g" → ["matthew-s", "matthew-g"]
+      const parts = hash.split('-and-');
+      const slugs = [];
+      parts.forEach(part => {
+        // Each part may contain multiple slugs joined by "-"
+        // But slugs like "matthew-s" also contain "-", so we need to match against known slugs
+        // Build all possible slugs first
+        const tokens = part.split('-');
+        let i = 0;
+        while (i < tokens.length) {
+          // Try two-token slug first (e.g. "matthew-s")
+          if (i + 1 < tokens.length) {
+            const twoToken = tokens[i] + '-' + tokens[i + 1];
+            const matchTwo = team.findIndex((m, idx) => getSlug(idx) === twoToken);
+            if (matchTwo !== -1) {
+              slugs.push(twoToken);
+              i += 2;
+              continue;
+            }
+          }
+          slugs.push(tokens[i]);
+          i++;
+        }
+      });
+
+      // Match slugs to team members
+      const indices = [];
+      slugs.forEach(slug => {
+        const idx = team.findIndex((m, i) => getSlug(i) === slug && !indices.includes(i));
+        if (idx !== -1) indices.push(idx);
+      });
+
+      if (indices.length === 0) return;
+
+      // Select the matched people
+      indices.forEach(i => {
+        selected.add(i);
+        grid.children[i].classList.add('selected');
+      });
+      update();
+
+      // Go straight to stage 2 (no animation)
+      document.getElementById('bookingBar').classList.add('hidden');
+      document.getElementById('teamGrid').classList.add('hidden');
+      document.getElementById('stage2').classList.remove('hidden');
+      document.querySelector('#pageIntro p').textContent = 'How would you like to meet?';
+
+      const peopleContainer = document.getElementById('selectedPeople');
+      peopleContainer.innerHTML = '';
+      indices.sort((a, b) => a - b).forEach(i => {
+        const m = team[i];
+        const div = document.createElement('div');
+        div.className = 'selected-person';
+        div.dataset.index = i;
+        div.innerHTML = `<img src="${imgBase}${m.img}" alt="${m.first} ${m.last}"><div class="info"><div class="name">${m.first} ${m.last}</div><div class="role">${m.role}</div></div>`;
+        peopleContainer.appendChild(div);
+      });
+    })();
   </script>
 
 </body>
