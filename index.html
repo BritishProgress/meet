@@ -1260,21 +1260,18 @@
         bookBtn.href = url;
         bookBtn.classList.remove('hidden');
 
-        // Check if URL is reachable before showing iframe
+        // Check if URL is reachable before loading iframe
         if (window._iframeTimeout) clearTimeout(window._iframeTimeout);
         iframe.onload = null;
+        iframe.removeAttribute('srcdoc');
         iframePanel.classList.remove('visible');
         document.getElementById('stage2').classList.remove('has-iframe');
         fetch(url, { mode: 'no-cors' }).then(() => {
-          // Request succeeded — load booking page
-          iframe.removeAttribute('srcdoc');
           iframe.src = url;
           iframePanel.classList.add('visible');
           document.getElementById('stage2').classList.add('has-iframe');
         }).catch(() => {
-          // Network error / DNS failure → show email draft in iframe
           const parts = getEmailParts();
-          iframe.src = 'about:blank';
           iframe.srcdoc = buildEmailDraftSrcdoc(parts);
           iframePanel.classList.add('visible');
           document.getElementById('stage2').classList.add('has-iframe');
