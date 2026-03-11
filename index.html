@@ -615,12 +615,37 @@
 
     .stage2 {
       width: 100%;
-      max-width: 860px;
+      max-width: 1100px;
       padding: 1rem 1.5rem 27px;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 0.75rem;
+    }
+
+    .stage2-left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      width: 100%;
+    }
+
+    .stage2-right {
+      display: none;
+      width: 100%;
+    }
+
+    .stage2-right.visible {
+      display: block;
+    }
+
+    .booking-iframe {
+      width: 100%;
+      height: 700px;
+      border: 1.5px solid #e5e0cc;
+      border-radius: 10px;
+      background: #fff;
     }
 
     .selected-people {
@@ -924,46 +949,51 @@
 
   <!-- Stage 2: Method selection -->
   <div class="stage2 hidden" id="stage2">
-    <div class="selected-people" id="selectedPeople"></div>
-    <button class="back-btn" id="backBtn">&larr; Change people</button>
+      <div class="stage2-left">
+        <div class="selected-people" id="selectedPeople"></div>
+        <button class="back-btn" id="backBtn">&larr; Change people</button>
 
-    <div class="method-step">
-      <div class="method-options">
-        <div class="method-col">
-          <button class="method-btn" data-method="in-person">In-person</button>
-          <div class="sub-options" id="locationOptions">
-            <div class="sub-btn-with-info">
-              <button class="sub-btn" data-location="office" id="officeBtn">Meet at 80 Strand</button>
-              <button type="button" class="info-icon" id="officeInfoToggle" aria-label="More info about 80 Strand"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><text x="8" y="12" text-anchor="middle" font-size="11" font-weight="600" fill="currentColor">?</text></svg></button>
-              <div class="info-bubble" id="officeInfoBox">
-                <div class="info-bubble-arrow"></div>
-                <button type="button" class="info-bubble-close" id="officeInfoClose">&times;</button>
-                <p><strong>Our Office</strong></p>
-                <p>Meet at the Centre for British Progress office:<br><strong><a href="https://maps.app.goo.gl/FVswKPcvaDPk2D5GA" target="_blank" rel="noopener">80 Strand, London, WC2R 0RL</a></strong></p>
-                <p class="info-box-transport">Nearest tube stations:</p>
-                <ul>
-                  <li><strong>Charing Cross</strong> (4 min) 🟤⚫</li>
-                  <li><strong>Embankment</strong> (4 min) 🟢🟡🟤⚫</li>
-                  <li><strong>Temple</strong> (5 min) 🟢🟡</li>
-                  <li><strong>Covent Garden</strong> (7 min) 🔵</li>
-                </ul>
+        <div class="method-step">
+          <div class="method-options">
+            <div class="method-col">
+              <button class="method-btn" data-method="in-person">In-person</button>
+              <div class="sub-options" id="locationOptions">
+                <div class="sub-btn-with-info">
+                  <button class="sub-btn" data-location="office" id="officeBtn">Meet at 80 Strand</button>
+                  <button type="button" class="info-icon" id="officeInfoToggle" aria-label="More info about 80 Strand"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><text x="8" y="12" text-anchor="middle" font-size="11" font-weight="600" fill="currentColor">?</text></svg></button>
+                  <div class="info-bubble" id="officeInfoBox">
+                    <div class="info-bubble-arrow"></div>
+                    <button type="button" class="info-bubble-close" id="officeInfoClose">&times;</button>
+                    <p><strong>Our Office</strong></p>
+                    <p>Meet at the Centre for British Progress office:<br><strong><a href="https://maps.app.goo.gl/FVswKPcvaDPk2D5GA" target="_blank" rel="noopener">80 Strand, London, WC2R 0RL</a></strong></p>
+                    <p class="info-box-transport">Nearest tube stations:</p>
+                    <ul>
+                      <li><strong>Charing Cross</strong> (4 min) 🟤⚫</li>
+                      <li><strong>Embankment</strong> (4 min) 🟢🟡🟤⚫</li>
+                      <li><strong>Temple</strong> (5 min) 🟢🟡</li>
+                      <li><strong>Covent Garden</strong> (7 min) 🔵</li>
+                    </ul>
+                  </div>
+                </div>
+                <button class="sub-btn" data-location="other">Another location</button>
               </div>
             </div>
-            <button class="sub-btn" data-location="other">Another location</button>
+            <div class="method-col">
+              <button class="method-btn" data-method="call">Call</button>
+              <div class="sub-options" id="callOptions">
+                <button class="sub-btn" data-calltype="video">Video call</button>
+                <button class="sub-btn" data-calltype="phone" id="phoneBtn">Phone call</button>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="method-col">
-          <button class="method-btn" data-method="call">Call</button>
-          <div class="sub-options" id="callOptions">
-            <button class="sub-btn" data-calltype="video">Video call</button>
-            <button class="sub-btn" data-calltype="phone" id="phoneBtn">Phone call</button>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <div class="generated-url" id="generatedUrl" onclick="copyUrl()"><span class="url-text"></span><svg class="copy-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 5.5V3.5C10.5 2.67 9.83 2 9 2H3.5C2.67 2 2 2.67 2 3.5V9C2 9.83 2.67 10.5 3.5 10.5H5.5" stroke="currentColor" stroke-width="1.5"/></svg></div>
-    <a class="book-btn hidden" id="bookBtn" href="#" target="_blank" rel="noopener">Book Meeting</a>
+        <div class="generated-url" id="generatedUrl" onclick="copyUrl()" style="display:none !important"><span class="url-text"></span><svg class="copy-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 5.5V3.5C10.5 2.67 9.83 2 9 2H3.5C2.67 2 2 2.67 2 3.5V9C2 9.83 2.67 10.5 3.5 10.5H5.5" stroke="currentColor" stroke-width="1.5"/></svg></div>
+        <a class="book-btn hidden" id="bookBtn" href="#" target="_blank" rel="noopener" style="display:none !important">Book Meeting</a>
+      </div>
+      <div class="stage2-right" id="stage2Right">
+        <iframe class="booking-iframe" id="bookingIframe" src="about:blank"></iframe>
+      </div>
   </div>
 
   <footer>
@@ -1210,6 +1240,8 @@
         (selectedMethod === 'in-person' && selectedLocation) ||
         (selectedMethod === 'call' && selectedCallType)
       );
+      const iframePanel = document.getElementById('stage2Right');
+      const iframe = document.getElementById('bookingIframe');
       if (ready && selected.size > 0) {
         const url = buildUrl();
         urlText.textContent = url;
@@ -1218,9 +1250,14 @@
         urlDisplay.querySelector('.copy-icon').outerHTML = copyIconSvg;
         bookBtn.href = url;
         bookBtn.classList.remove('hidden');
+        // Show iframe with booking URL
+        iframe.src = url;
+        iframePanel.classList.add('visible');
       } else {
         bookBtn.classList.add('hidden');
         urlDisplay.classList.remove('visible');
+        iframe.src = 'about:blank';
+        iframePanel.classList.remove('visible');
       }
     }
 
@@ -1349,6 +1386,8 @@
       document.querySelector('[data-method="call"]').textContent = 'Call';
       document.getElementById('bookBtn').classList.add('hidden');
       document.getElementById('generatedUrl').classList.remove('visible');
+      document.getElementById('bookingIframe').src = 'about:blank';
+      document.getElementById('stage2Right').classList.remove('visible');
 
       window.scrollTo({ top: 0 });
 
