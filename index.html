@@ -994,6 +994,7 @@
       <div class="stage2-right" id="stage2Right">
         <iframe class="booking-iframe" id="bookingIframe" src="about:blank"></iframe>
       </div>
+      <a class="book-btn hidden" id="mailtoBtn" href="#" target="_blank" rel="noopener">Request Meeting via Email</a>
   </div>
 
   <footer>
@@ -1242,6 +1243,7 @@
       );
       const iframePanel = document.getElementById('stage2Right');
       const iframe = document.getElementById('bookingIframe');
+      const mailtoBtn = document.getElementById('mailtoBtn');
       if (ready && selected.size > 0) {
         const url = buildUrl();
         urlText.textContent = url;
@@ -1250,14 +1252,34 @@
         urlDisplay.querySelector('.copy-icon').outerHTML = copyIconSvg;
         bookBtn.href = url;
         bookBtn.classList.remove('hidden');
-        // Show iframe with booking URL
-        iframe.src = url;
-        iframePanel.classList.add('visible');
+
+        // Build mailto fallback
+        mailtoBtn.href = buildMailto();
+        mailtoBtn.classList.add('hidden');
+
+        // Check if URL is reachable before showing iframe
+        if (window._iframeTimeout) clearTimeout(window._iframeTimeout);
+        iframe.onload = null;
+        iframePanel.classList.remove('visible');
+        fetch(url, { mode: 'no-cors' }).then(() => {
+          // Request succeeded (even opaque response means server exists)
+          iframe.src = url;
+          iframePanel.classList.add('visible');
+          mailtoBtn.classList.add('hidden');
+        }).catch(() => {
+          // Network error / DNS failure → show mailto
+          iframe.src = 'about:blank';
+          iframePanel.classList.remove('visible');
+          mailtoBtn.classList.remove('hidden');
+        });
       } else {
         bookBtn.classList.add('hidden');
         urlDisplay.classList.remove('visible');
         iframe.src = 'about:blank';
+        iframe.onload = null;
+        if (window._iframeTimeout) clearTimeout(window._iframeTimeout);
         iframePanel.classList.remove('visible');
+        mailtoBtn.classList.add('hidden');
       }
     }
 
@@ -1274,6 +1296,34 @@
           urlDisplay.querySelector('.copy-icon').outerHTML = copyIconSvg;
         }, { once: true });
       });
+    }
+
+    function buildMailto() {
+      const names = [...selected].sort((a, b) => a - b).map(i => team[i].first + ' ' + team[i].last);
+      let nameList;
+      if (names.length === 1) nameList = names[0];
+      else {
+        const last = names.pop();
+        nameList = names.join(', ') + ' and ' + last;
+      }
+
+      let methodText = '';
+      if (selectedMethod === 'in-person' && selectedLocation === 'office') methodText = 'in-person meeting at 80 Strand';
+      else if (selectedMethod === 'in-person' && selectedLocation === 'other') methodText = 'in-person meeting';
+      else if (selectedMethod === 'call' && selectedCallType === 'phone') methodText = 'phone call';
+      else if (selectedMethod === 'call' && selectedCallType === 'video') methodText = 'video call';
+
+      const subject = `Meeting Request — ${methodText} with ${nameList}`;
+      const body = `Hi,
+
+I'd like to request a ${methodText} with ${nameList}.
+
+My preferred times are:
+- [Please add your preferred date/time options here]
+
+Thank you`;
+
+      return `mailto:office@britishprogress.org?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     }
 
     function updateOfficeBtn() {
@@ -1387,7 +1437,10 @@
       document.getElementById('bookBtn').classList.add('hidden');
       document.getElementById('generatedUrl').classList.remove('visible');
       document.getElementById('bookingIframe').src = 'about:blank';
+      document.getElementById('bookingIframe').onload = null;
+      if (window._iframeTimeout) clearTimeout(window._iframeTimeout);
       document.getElementById('stage2Right').classList.remove('visible');
+      document.getElementById('mailtoBtn').classList.add('hidden');
 
       window.scrollTo({ top: 0 });
 
@@ -1434,6 +1487,12 @@
 
     document.getElementById('officeInfoBox').addEventListener('click', (e) => {
       e.stopPropagation();
+    });
+
+    // Mailto fallback — explicitly open mailto in case <a> doesn't trigger
+    document.getElementById('mailtoBtn').addEventListener('click', (e) => {
+      e.preventDefault();
+      window.location.href = e.currentTarget.href;
     });
 
     document.addEventListener('click', () => {
