@@ -616,12 +616,11 @@
     .stage2 {
       width: 100%;
       max-width: 860px;
-      padding: 1rem 1.5rem 2rem;
+      padding: 1rem 1.5rem 27px;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 0.75rem;
-      flex: 1;
     }
 
     .selected-people {
@@ -1196,7 +1195,11 @@
     function updateBookBtn() {
       const bookBtn = document.getElementById('bookBtn');
       const urlDisplay = document.getElementById('generatedUrl');
-      const urlText = urlDisplay.querySelector('.url-text');
+      let urlText = urlDisplay.querySelector('.url-text');
+      if (!urlText) {
+        urlDisplay.innerHTML = '<span class="url-text"></span>' + copyIconSvg;
+        urlText = urlDisplay.querySelector('.url-text');
+      }
       const ready = selectedMethod && (
         (selectedMethod === 'in-person' && selectedLocation) ||
         (selectedMethod === 'call' && selectedCallType)
