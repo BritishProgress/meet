@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval'; connect-src *; frame-src *;">
   <title>Book a Meeting — Centre for British Progress</title>
   <style>
     @font-face {
@@ -438,11 +437,27 @@
       width: 100%;
       visibility: hidden;
       pointer-events: none;
+      padding-left: 0.25rem;
     }
 
     .sub-options.active {
       visibility: visible;
       pointer-events: auto;
+    }
+
+    .sub-btn-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .sub-btn-row::before {
+      content: '↳';
+      display: block;
+      font-size: 1.1rem;
+      color: #d0cbb8;
+      flex-shrink: 0;
+      line-height: 1;
     }
 
     .sub-btn {
@@ -456,12 +471,14 @@
       text-align: center;
       transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
       font-family: inherit;
+      flex: 1;
     }
 
     .sub-btn-with-info {
       display: flex;
       align-items: center;
       position: relative;
+      flex: 1;
     }
 
     .sub-btn-with-info .sub-btn {
@@ -496,7 +513,7 @@
     .info-bubble {
       display: none;
       position: absolute;
-      left: calc(100% + 20px);
+      left: calc(100% + 36px);
       top: 50%;
       transform: translateY(-50%);
       background: #fff;
@@ -579,10 +596,53 @@
       padding: 0.15rem 0;
     }
 
+    .walk-icon {
+      vertical-align: -1px;
+      opacity: 0.7;
+    }
+
     .info-box-transport {
       margin-bottom: 0.1rem !important;
       opacity: 0.6;
     }
+
+    .tube-dot {
+      display: inline-block;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      margin-left: 2px;
+      vertical-align: middle;
+      position: relative;
+      cursor: default;
+    }
+    .tube-dot:hover::after {
+      content: attr(data-line);
+      position: absolute;
+      bottom: calc(100% + 4px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #283131;
+      color: #fff;
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .tube-bakerloo { background: #B36305; }
+    .tube-central { background: #E32017; }
+    .tube-circle { background: #FFD300; }
+    .tube-district { background: #00782A; }
+    .tube-hammersmith { background: #F3A9BB; }
+    .tube-jubilee { background: #A0A5A9; }
+    .tube-metropolitan { background: #9B0056; }
+    .tube-northern { background: #000000; }
+    .tube-piccadilly { background: #003688; }
+    .tube-victoria { background: #0098D4; }
+    .tube-waterloo { background: #95CDBA; }
+    .tube-elizabeth { background: #6950A1; }
 
     .info-box-map {
       font-weight: 550;
@@ -629,33 +689,48 @@
       flex-direction: column;
       align-items: center;
       gap: 0.75rem;
-      flex: 1;
+      flex: 0 0 50%;
       min-width: 0;
-    }
-
-    .stage2:not(.has-iframe) .stage2-left {
-      max-width: 1100px;
-      margin: 0 auto;
     }
 
     .stage2-right {
-      display: none;
-      flex: 1;
+      flex: 0 0 calc(50% - 1.5rem);
       min-width: 0;
-    }
-
-    .stage2-right.visible {
       display: block;
     }
 
     .booking-iframe {
       width: 100%;
-      height: 700px;
+      height: 750px;
       border: 1.5px solid #e5e0cc;
       border-radius: 10px;
       background: #fff;
       position: sticky;
       top: 100px;
+    }
+
+    .booking-iframe.hidden {
+      display: none;
+    }
+
+    .iframe-placeholder {
+      width: 100%;
+      height: 750px;
+      border: 1.5px solid #e5e0cc;
+      border-radius: 10px;
+      background: #fff;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 250px;
+      color: #b0a990;
+      font-size: 0.95rem;
+      position: sticky;
+      top: 100px;
+    }
+
+    .iframe-placeholder.hidden {
+      display: none;
     }
 
     .selected-people {
@@ -968,31 +1043,39 @@
             <div class="method-col">
               <button class="method-btn" data-method="in-person">In-person</button>
               <div class="sub-options" id="locationOptions">
-                <div class="sub-btn-with-info">
-                  <button class="sub-btn" data-location="office" id="officeBtn">Meet at 80 Strand</button>
-                  <button type="button" class="info-icon" id="officeInfoToggle" aria-label="More info about 80 Strand"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><text x="8" y="12" text-anchor="middle" font-size="11" font-weight="600" fill="currentColor">?</text></svg></button>
-                  <div class="info-bubble" id="officeInfoBox">
-                    <div class="info-bubble-arrow"></div>
-                    <button type="button" class="info-bubble-close" id="officeInfoClose">&times;</button>
-                    <p><strong>Our Office</strong></p>
-                    <p>Meet at the Centre for British Progress office:<br><strong><a href="https://maps.app.goo.gl/FVswKPcvaDPk2D5GA" target="_blank" rel="noopener">80 Strand, London, WC2R 0RL</a></strong></p>
-                    <p class="info-box-transport">Nearest tube stations:</p>
-                    <ul>
-                      <li><strong>Charing Cross</strong> (4 min) 🟤⚫</li>
-                      <li><strong>Embankment</strong> (4 min) 🟢🟡🟤⚫</li>
-                      <li><strong>Temple</strong> (5 min) 🟢🟡</li>
-                      <li><strong>Covent Garden</strong> (7 min) 🔵</li>
-                    </ul>
+                <div class="sub-btn-row">
+                  <div class="sub-btn-with-info">
+                    <button class="sub-btn" data-location="office" id="officeBtn">Meet at 80 Strand</button>
+                    <button type="button" class="info-icon" id="officeInfoToggle" aria-label="More info about 80 Strand"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><text x="8" y="12" text-anchor="middle" font-size="11" font-weight="600" fill="currentColor">?</text></svg></button>
+                    <div class="info-bubble" id="officeInfoBox">
+                      <div class="info-bubble-arrow"></div>
+                      <button type="button" class="info-bubble-close" id="officeInfoClose">&times;</button>
+                      <p><strong>Our Office</strong></p>
+                      <p>Meet at the Centre for British Progress office:<br><strong><a href="https://maps.app.goo.gl/FVswKPcvaDPk2D5GA" target="_blank" rel="noopener">80 Strand, London, WC2R 0RL</a></strong></p>
+                      <p class="info-box-transport">Nearest tube stations:</p>
+                      <ul>
+                        <li><strong>Charing Cross</strong> (4 min walk) <span class="tube-dot tube-bakerloo" data-line="Bakerloo"></span><span class="tube-dot tube-northern" data-line="Northern"></span></li>
+                        <li><strong>Embankment</strong> (4 min walk) <span class="tube-dot tube-district" data-line="District"></span><span class="tube-dot tube-circle" data-line="Circle"></span><span class="tube-dot tube-bakerloo" data-line="Bakerloo"></span><span class="tube-dot tube-northern" data-line="Northern"></span></li>
+                        <li><strong>Temple</strong> (5 min walk) <span class="tube-dot tube-district" data-line="District"></span><span class="tube-dot tube-circle" data-line="Circle"></span></li>
+                        <li><strong>Covent Garden</strong> (7 min walk) <span class="tube-dot tube-piccadilly" data-line="Piccadilly"></span></li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
-                <button class="sub-btn" data-location="other">Another location</button>
+                <div class="sub-btn-row">
+                  <button class="sub-btn" data-location="other">Another location</button>
+                </div>
               </div>
             </div>
             <div class="method-col">
               <button class="method-btn" data-method="call">Call</button>
               <div class="sub-options" id="callOptions">
-                <button class="sub-btn" data-calltype="video">Video call</button>
-                <button class="sub-btn" data-calltype="phone" id="phoneBtn">Phone call</button>
+                <div class="sub-btn-row">
+                  <button class="sub-btn" data-calltype="video">Video call</button>
+                </div>
+                <div class="sub-btn-row">
+                  <button class="sub-btn" data-calltype="phone" id="phoneBtn">Phone call</button>
+                </div>
               </div>
             </div>
           </div>
@@ -1002,7 +1085,8 @@
         <a class="book-btn hidden" id="bookBtn" href="#" target="_blank" rel="noopener" style="display:none !important">Book Meeting</a>
       </div>
       <div class="stage2-right" id="stage2Right">
-        <iframe class="booking-iframe" id="bookingIframe" src="about:blank"></iframe>
+        <div class="iframe-placeholder" id="iframePlaceholder">Select a meeting method to get started</div>
+        <iframe class="booking-iframe hidden" id="bookingIframe" src="about:blank" scrolling="yes"></iframe>
       </div>
   </div>
 
@@ -1026,6 +1110,10 @@
   </footer>
 
   <script>
+    // Load booking URL config
+    let bookingUrls = {};
+    const bookingUrlsReady = fetch('booking-urls.json').then(r => r.json()).then(data => { bookingUrls = data; }).catch(() => {});
+
     const imgBase = "https://britishprogress.org/_next/image?w=828&q=75&url=%2Fapi%2Fmedia%2Ffile%2F";
     const team = [
       { first: "David", last: "Lawrence", role: "Co-founder", img: "PTAIT_20250305_9225.jpg" },
@@ -1250,8 +1338,8 @@
         (selectedMethod === 'in-person' && selectedLocation) ||
         (selectedMethod === 'call' && selectedCallType)
       );
-      const iframePanel = document.getElementById('stage2Right');
       const iframe = document.getElementById('bookingIframe');
+      const placeholder = document.getElementById('iframePlaceholder');
       if (ready && selected.size > 0) {
         const url = buildUrl();
         urlText.textContent = url;
@@ -1261,31 +1349,59 @@
         bookBtn.href = url;
         bookBtn.classList.remove('hidden');
 
-        // Check if URL is reachable before loading iframe
-        if (window._iframeTimeout) clearTimeout(window._iframeTimeout);
-        iframe.onload = null;
-        iframe.removeAttribute('srcdoc');
-        iframePanel.classList.remove('visible');
-        document.getElementById('stage2').classList.remove('has-iframe');
-        fetch(url, { mode: 'no-cors' }).then(() => {
-          iframe.src = url;
-          iframePanel.classList.add('visible');
-          document.getElementById('stage2').classList.add('has-iframe');
-        }).catch(() => {
-          const parts = getEmailParts();
-          iframe.srcdoc = buildEmailDraftSrcdoc(parts);
-          iframePanel.classList.add('visible');
-          document.getElementById('stage2').classList.add('has-iframe');
-        });
+        // Check if this URL slug exists in booking-urls.json
+        const slug = url.replace('https://meet-', '').replace('.britishprogress.org/', '');
+        if (bookingUrls[slug]) {
+          iframe.removeAttribute('srcdoc');
+          iframe.src = bookingUrls[slug];
+        } else {
+          iframe.removeAttribute('src');
+          iframe.srcdoc = buildEmailDraftSrcdoc(getEmailParts());
+        }
+        placeholder.classList.add('hidden');
+        iframe.classList.remove('hidden');
+
+        // Update URL with method
+        updateUrlMethod();
       } else {
         bookBtn.classList.add('hidden');
         urlDisplay.classList.remove('visible');
         iframe.removeAttribute('srcdoc');
         iframe.src = 'about:blank';
-        iframe.onload = null;
-        if (window._iframeTimeout) clearTimeout(window._iframeTimeout);
-        iframePanel.classList.remove('visible');
-        document.getElementById('stage2').classList.remove('has-iframe');
+        iframe.classList.add('hidden');
+        placeholder.classList.remove('hidden');
+
+        // Update placeholder hint based on current state
+        if (!selectedMethod) {
+          placeholder.textContent = 'Select a meeting method to get started';
+        } else if (selectedMethod === 'in-person' && !selectedLocation) {
+          placeholder.textContent = 'Select a meeting location';
+        } else if (selectedMethod === 'call' && !selectedCallType) {
+          placeholder.textContent = 'Select a call type';
+        }
+
+        // Remove method from URL when deselected
+        updateUrlMethod();
+      }
+    }
+
+    function getMethodSlug() {
+      if (selectedMethod === 'in-person' && selectedLocation === 'office') return 'office';
+      if (selectedMethod === 'in-person' && selectedLocation === 'other') return 'in-person';
+      if (selectedMethod === 'call' && selectedCallType === 'video') return 'video-call';
+      if (selectedMethod === 'call' && selectedCallType === 'phone') return 'phone-call';
+      return null;
+    }
+
+    function updateUrlMethod() {
+      const hash = window.location.hash;
+      if (!hash) return;
+      const base = hash.split('?')[0];
+      const methodSlug = getMethodSlug();
+      if (methodSlug) {
+        history.replaceState(null, '', base + '?method=' + methodSlug);
+      } else {
+        history.replaceState(null, '', base);
       }
     }
 
@@ -1356,8 +1472,8 @@
         '<\/div>' +
         '<div class="draft-body">' + bodyHtml + '<\/div>' +
         '<div class="draft-footer">' +
-        '<a class="send-btn" href="' + gmailUrl + '" target="_blank">Open in Gmail<\/a>' +
-        '<span class="hint">Opens a pre-filled email in Gmail<\/span>' +
+        '<a class="send-btn" href="' + gmailUrl + '" target="_blank">Send Email<\/a>' +
+        '<span class="hint">Opens a pre-filled email draft<\/span>' +
         '<\/div>' +
         '<\/div>' +
         '<\/body><\/html>';
@@ -1605,8 +1721,10 @@
 
     // Restore state from URL hash on load
     (function restoreFromHash() {
-      const hash = window.location.hash.slice(1);
-      if (!hash) return;
+      const rawHash = window.location.hash.slice(1);
+      if (!rawHash) return;
+      const [hash, queryStr] = rawHash.split('?');
+      const methodParam = queryStr ? new URLSearchParams(queryStr).get('method') : null;
 
       // Parse slugs: split on "-and-" first, then split remaining on "-"
       // e.g. "david-julia-and-maxx" → ["david", "julia", "maxx"]
@@ -1670,6 +1788,33 @@
       // For 2+ people: rename Call → Video call
       if (indices.length >= 2) {
         document.querySelector('[data-method="call"]').textContent = 'Video call';
+      }
+
+      // Restore method from URL
+      if (methodParam) {
+        if (methodParam === 'office' || methodParam === 'in-person') {
+          const inPersonBtn = document.querySelector('[data-method="in-person"]');
+          inPersonBtn.classList.add('selected');
+          selectedMethod = 'in-person';
+          document.getElementById('locationOptions').classList.add('active');
+          const loc = methodParam === 'office' ? 'office' : 'other';
+          selectedLocation = loc;
+          document.querySelector(`#locationOptions .sub-btn[data-location="${loc}"]`).classList.add('selected');
+        } else if (methodParam === 'video-call' || methodParam === 'phone-call') {
+          const callBtn = document.querySelector('[data-method="call"]');
+          callBtn.classList.add('selected');
+          selectedMethod = 'call';
+          const callType = methodParam === 'video-call' ? 'video' : 'phone';
+          if (indices.length >= 2) {
+            // Direct video call, no sub-options
+            selectedCallType = 'video';
+          } else {
+            document.getElementById('callOptions').classList.add('active');
+            selectedCallType = callType;
+            document.querySelector(`#callOptions .sub-btn[data-calltype="${callType}"]`).classList.add('selected');
+          }
+        }
+        bookingUrlsReady.then(() => updateBookBtn());
       }
     })();
   </script>
