@@ -615,12 +615,12 @@
 
     .stage2 {
       width: 100%;
-      max-width: 1100px;
+      max-width: 1400px;
       padding: 1rem 1.5rem 27px;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.75rem;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 1.5rem;
     }
 
     .stage2-left {
@@ -628,12 +628,19 @@
       flex-direction: column;
       align-items: center;
       gap: 0.75rem;
-      width: 100%;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .stage2:not(.has-iframe) .stage2-left {
+      max-width: 1100px;
+      margin: 0 auto;
     }
 
     .stage2-right {
       display: none;
-      width: 100%;
+      flex: 1;
+      min-width: 0;
     }
 
     .stage2-right.visible {
@@ -646,6 +653,8 @@
       border: 1.5px solid #e5e0cc;
       border-radius: 10px;
       background: #fff;
+      position: sticky;
+      top: 100px;
     }
 
     .selected-people {
@@ -994,7 +1003,6 @@
       <div class="stage2-right" id="stage2Right">
         <iframe class="booking-iframe" id="bookingIframe" src="about:blank"></iframe>
       </div>
-      <a class="book-btn hidden" id="mailtoBtn" href="#">Request Meeting via Email</a>
   </div>
 
   <footer>
@@ -1243,7 +1251,6 @@
       );
       const iframePanel = document.getElementById('stage2Right');
       const iframe = document.getElementById('bookingIframe');
-      const mailtoBtn = document.getElementById('mailtoBtn');
       if (ready && selected.size > 0) {
         const url = buildUrl();
         urlText.textContent = url;
@@ -1253,33 +1260,34 @@
         bookBtn.href = url;
         bookBtn.classList.remove('hidden');
 
-        // Build mailto fallback
-        mailtoBtn.href = buildMailto();
-        mailtoBtn.classList.add('hidden');
-
         // Check if URL is reachable before showing iframe
         if (window._iframeTimeout) clearTimeout(window._iframeTimeout);
         iframe.onload = null;
         iframePanel.classList.remove('visible');
+        document.getElementById('stage2').classList.remove('has-iframe');
         fetch(url, { mode: 'no-cors' }).then(() => {
-          // Request succeeded (even opaque response means server exists)
+          // Request succeeded — load booking page
+          iframe.removeAttribute('srcdoc');
           iframe.src = url;
           iframePanel.classList.add('visible');
-          mailtoBtn.classList.add('hidden');
+          document.getElementById('stage2').classList.add('has-iframe');
         }).catch(() => {
-          // Network error / DNS failure → show mailto
+          // Network error / DNS failure → show email draft in iframe
+          const parts = getEmailParts();
           iframe.src = 'about:blank';
-          iframePanel.classList.remove('visible');
-          mailtoBtn.classList.remove('hidden');
+          iframe.srcdoc = buildEmailDraftSrcdoc(parts);
+          iframePanel.classList.add('visible');
+          document.getElementById('stage2').classList.add('has-iframe');
         });
       } else {
         bookBtn.classList.add('hidden');
         urlDisplay.classList.remove('visible');
+        iframe.removeAttribute('srcdoc');
         iframe.src = 'about:blank';
         iframe.onload = null;
         if (window._iframeTimeout) clearTimeout(window._iframeTimeout);
         iframePanel.classList.remove('visible');
-        mailtoBtn.classList.add('hidden');
+        document.getElementById('stage2').classList.remove('has-iframe');
       }
     }
 
@@ -1298,13 +1306,14 @@
       });
     }
 
-    function buildMailto() {
+    function getEmailParts() {
       const names = [...selected].sort((a, b) => a - b).map(i => team[i].first + ' ' + team[i].last);
       let nameList;
       if (names.length === 1) nameList = names[0];
       else {
-        const last = names.pop();
-        nameList = names.join(', ') + ' and ' + last;
+        const allNames = [...names];
+        const last = allNames.pop();
+        nameList = allNames.join(', ') + ' and ' + last;
       }
 
       let methodText = '';
@@ -1313,9 +1322,47 @@
       else if (selectedMethod === 'call' && selectedCallType === 'phone') methodText = 'phone call';
       else if (selectedMethod === 'call' && selectedCallType === 'video') methodText = 'video call';
 
-      const subject = `Meeting Request — ${methodText} with ${nameList}`;
-      const body = `Hi,\n\nI'd like to request a ${methodText} with ${nameList}.\n\nMy preferred times are:\n- [Please add your preferred date/time options here]\n\nThank you`;
-      return `https://mail.google.com/mail/?view=cm&to=office@britishprogress.org&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      return {
+        to: 'office@britishprogress.org',
+        subject: `Meeting Request \u2014 ${methodText} with ${nameList}`,
+        body: `Hi,\n\nI'd like to request a ${methodText} with ${nameList}.\n\nMy preferred times are:\n- [Please add your preferred date/time options here]\n\nThank you`
+      };
+    }
+
+    function buildGmailUrl(parts) {
+      return `https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(parts.to)}&su=${encodeURIComponent(parts.subject)}&body=${encodeURIComponent(parts.body)}`;
+    }
+
+    function buildEmailDraftSrcdoc(parts) {
+      const gmailUrl = buildGmailUrl(parts);
+      const bodyHtml = parts.body.replace(/\n/g, '<br>');
+      return '<!DOCTYPE html>' +
+        '<html><head><style>' +
+        '* { margin: 0; padding: 0; box-sizing: border-box; }' +
+        'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #fff; color: #283131; padding: 1.5rem; }' +
+        '.draft { border: 1px solid #e5e0cc; border-radius: 8px; overflow: hidden; }' +
+        '.draft-header { background: #f8f7f2; padding: 0.75rem 1rem; border-bottom: 1px solid #e5e0cc; }' +
+        '.draft-row { display: flex; gap: 0.5rem; align-items: baseline; padding: 0.25rem 0; font-size: 14px; }' +
+        '.draft-label { color: #666; font-weight: 500; min-width: 55px; }' +
+        '.draft-value { color: #283131; }' +
+        '.draft-body { padding: 1rem; font-size: 14px; line-height: 1.6; min-height: 150px; }' +
+        '.draft-footer { padding: 0.75rem 1rem; border-top: 1px solid #e5e0cc; display: flex; gap: 0.75rem; }' +
+        '.send-btn { display: inline-block; background: #0B4938; color: #fff; font-size: 14px; font-weight: 550; padding: 0.5rem 1.25rem; border: none; border-radius: 6px; cursor: pointer; text-decoration: none; }' +
+        '.send-btn:hover { background: #093d2e; }' +
+        '.hint { font-size: 12px; color: #999; align-self: center; }' +
+        '<\/style><\/head><body>' +
+        '<div class="draft">' +
+        '<div class="draft-header">' +
+        '<div class="draft-row"><span class="draft-label">To:<\/span><span class="draft-value">' + parts.to + '<\/span><\/div>' +
+        '<div class="draft-row"><span class="draft-label">Subject:<\/span><span class="draft-value">' + parts.subject + '<\/span><\/div>' +
+        '<\/div>' +
+        '<div class="draft-body">' + bodyHtml + '<\/div>' +
+        '<div class="draft-footer">' +
+        '<a class="send-btn" href="' + gmailUrl + '" target="_blank">Open in Gmail<\/a>' +
+        '<span class="hint">Opens a pre-filled email in Gmail<\/span>' +
+        '<\/div>' +
+        '<\/div>' +
+        '<\/body><\/html>';
     }
 
     function updateOfficeBtn() {
@@ -1432,7 +1479,7 @@
       document.getElementById('bookingIframe').onload = null;
       if (window._iframeTimeout) clearTimeout(window._iframeTimeout);
       document.getElementById('stage2Right').classList.remove('visible');
-      document.getElementById('mailtoBtn').classList.add('hidden');
+      document.getElementById('stage2').classList.remove('has-iframe');
 
       window.scrollTo({ top: 0 });
 
@@ -1479,12 +1526,6 @@
 
     document.getElementById('officeInfoBox').addEventListener('click', (e) => {
       e.stopPropagation();
-    });
-
-    // Open Gmail compose in new tab
-    document.getElementById('mailtoBtn').addEventListener('click', (e) => {
-      e.preventDefault();
-      window.open(e.currentTarget.href, '_blank', 'width=680,height=700');
     });
 
     document.addEventListener('click', () => {
