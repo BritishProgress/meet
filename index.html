@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book a Meeting — Centre for British Progress</title>
+  <style>
+    @font-face {
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 100 900;
+      font-display: swap;
+      src: url(fonts/inter.woff2) format('woff2');
+    }
+    @font-face {
+      font-family: 'Inter Tight';
+      font-style: normal;
+      font-weight: 500;
+      font-display: swap;
+      src: url(fonts/inter-tight.woff2) format('woff2');
+    }
+    @font-face {
+      font-family: 'Inter Tight';
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+      src: url(fonts/inter-tight.woff2) format('woff2');
+    }
+  </style>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html {
+      font-size: 18px;
+      line-height: 32px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      font-size: 18px;
+      line-height: 32px;
+      font-family: 'Inter', Arial, 'Helvetica Neue', Helvetica, sans-serif;
+      background: #FDF9E9;
+      color: #283131;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      width: 100%;
+      background-color: #FFFBEA;
+      padding: 26.5px 45px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 500;
+      border-bottom: 1px solid #293131;
+      max-height: 80px;
+    }
+
+    .logo {
+      font-size: clamp(1rem, 0.8143rem + 0.7619vw, 1.5rem);
+      font-family: 'Inter Tight', sans-serif;
+      font-optical-sizing: auto;
+      font-weight: 550;
+      font-style: normal;
+      color: #293131;
+      gap: 18px;
+      text-decoration: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+
+    .logo h1 {
+      font-size: clamp(1rem, 0.8143rem + 0.7619vw, 1.5rem);
+      font-family: 'Inter Tight', sans-serif;
+      font-optical-sizing: auto;
+      font-weight: 550;
+      font-style: normal;
+      line-height: 70px;
+      margin: 0;
+    }
+
+    .logo-svg {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      margin: 0;
+      padding: 0;
+      gap: 25px;
+    }
+
+    nav ul li {
+      transition: opacity 0.3s ease-in-out;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #0A4938;
+      font-weight: 300;
+      font-size: 16px;
+      line-height: 100%;
+      letter-spacing: 0.01em;
+      text-align: center;
+      transition: opacity 0.3s ease-in-out;
+    }
+
+    nav a:hover {
+      border-bottom: 1px solid #FE9F1C;
+    }
+
+    .burger-menu {
+      display: none;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      padding: 0;
+    }
+
+    .burger-menu div {
+      width: 15px;
+      height: 1px;
+      background-color: #0A4938;
+      margin: 4px 0;
+      transition: transform 0.3s ease;
+    }
+
+    .burger-menu.active div:first-child {
+      transform: translateY(5px) rotate(45deg);
+    }
+
+    .burger-menu.active div:nth-child(2) {
+      opacity: 0;
+    }
+
+    .burger-menu.active div:nth-child(3) {
+      transform: translateY(-5px) rotate(-45deg);
+    }
+
+    .mobile-nav {
+      position: absolute;
+      top: 80px;
+      left: 0;
+      width: 100%;
+      background: #FFFDF4;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      transform: translateY(-100%);
+      transition: 0.3s ease-in-out;
+      opacity: 0;
+      visibility: hidden;
+      z-index: 499;
+    }
+
+    .mobile-nav.open {
+      transform: translateY(0);
+      opacity: 1;
+      visibility: visible;
+      border-bottom: 1px solid #293131;
+    }
+
+    .mobile-nav ul {
+      flex-direction: column;
+      gap: 6px;
+      align-items: flex-end;
+    }
+
+    .desktop-nav {
+      display: block;
+    }
+
+    .page-intro {
+      text-align: center;
+      padding: 3rem 1.5rem 1.5rem;
+      max-width: 600px;
+    }
+
+    .page-intro h1 {
+      font-size: 1.75rem;
+      font-weight: 550;
+      margin-bottom: 0.5rem;
+      color: #0B4938;
+    }
+
+    .page-intro p {
+      color: #283131;
+      opacity: 0.6;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-auto-rows: 1fr;
+      gap: 0.75rem;
+      max-width: 860px;
+      width: 100%;
+      padding: 1rem 1.5rem;
+    }
+
+    .member-card {
+      background: #fff;
+      border: 2px solid #e5e0cc;
+      border-radius: 10px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      user-select: none;
+      -webkit-user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .member-card:hover {
+      border-color: #093D77;
+      background: #d4e6fb;
+    }
+
+    .max-reached .member-card:not(.selected):hover {
+      border-color: #ccc;
+      background: #f0f0f0;
+      cursor: not-allowed;
+    }
+
+    .member-card.selected {
+      border-color: #0B4938;
+      background: #e6fce9;
+      box-shadow: 0 0 0 1px #0B4938;
+    }
+
+    .member-card .avatar {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: #e5e0cc;
+    }
+
+    .member-card .info {
+      min-width: 0;
+    }
+
+    .member-card .name {
+      font-weight: 550;
+      font-size: 0.95rem;
+      margin-bottom: 0.2rem;
+      color: #283131;
+    }
+
+    .member-card .role {
+      font-size: 0.8rem;
+      line-height: 1.3;
+      min-height: calc(2 * 0.8rem * 1.3);
+      color: #283131;
+      opacity: 0.55;
+    }
+
+    .booking-bar {
+      position: sticky;
+      bottom: 0;
+      width: 100%;
+      max-width: 860px;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      background: linear-gradient(transparent, #FDF9E9 30%);
+      padding-top: 5rem;
+      margin-top: auto;
+      transition: opacity 0.2s ease;
+    }
+
+    .booking-bar.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .selection-summary {
+      font-size: 0.85rem;
+      color: #283131;
+      opacity: 0.6;
+      text-align: center;
+    }
+
+    .selection-summary span {
+      color: #283131;
+      font-weight: 550;
+      opacity: 1;
+    }
+
+    .generated-url {
+      font-size: 0.8rem;
+      color: #093D77;
+      word-break: break-all;
+      text-align: center;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    .book-btn {
+      display: inline-block;
+      background: #0B4938;
+      color: #FDF9E9;
+      font-size: 1rem;
+      font-weight: 550;
+      padding: 0.75rem 2rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.15s ease;
+    }
+
+    .book-btn:hover {
+      background: #093d2e;
+    }
+
+    footer {
+      width: 100%;
+      background-color: #293131;
+      color: #FFFBEA;
+      padding: 29px 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: clamp(0.5rem, 0.4071rem + 0.381vw, 0.75rem);
+      font-weight: 300;
+      line-height: 120%;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: auto;
+    }
+
+    .footer-left {
+      text-align: left;
+      line-height: 14.4px;
+    }
+
+    .footer-right {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .footer-right a {
+      color: #FFFBEA;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: 300;
+      font-size: clamp(0.5rem, 0.4071rem + 0.381vw, 0.75rem);
+      letter-spacing: 0.1em;
+      line-height: 14.4px;
+    }
+
+    .foooter-row {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+    }
+
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .dd-link {
+      color: #FFFBEA;
+      text-decoration: none;
+      font-weight: 300;
+      opacity: 0.6;
+    }
+
+    .sr-only {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      padding: 0 !important;
+      margin: -1px !important;
+      overflow: hidden !important;
+      clip: rect(0,0,0,0) !important;
+      white-space: nowrap !important;
+      border: 0 !important;
+    }
+
+    .max-msg {
+      font-size: 0.85rem;
+      color: #B3063E;
+      font-weight: 550;
+      visibility: hidden;
+      text-align: center;
+      padding: 0.5rem 0 0;
+    }
+
+    .max-msg.visible {
+      visibility: visible;
+    }
+
+    .shake {
+      animation: shake 0.4s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      50% { transform: translateX(4px); }
+      75% { transform: translateX(-4px); }
+    }
+
+    @media screen and (max-width: 1024px) {
+      .logo h1 { font-size: 17px; }
+    }
+
+    @media (min-width: 769px) {
+      .mobile-nav { display: none; }
+    }
+
+    @media screen and (max-width: 990px) {
+      .footer-right { gap: 10px; }
+    }
+
+    @media screen and (max-width: 768px) {
+      .burger-menu { display: block; }
+      .desktop-nav { display: none; }
+      .logo { gap: 14px; }
+      .logo h1 { font-size: 18px; }
+      header { padding: 14px; height: 50px; }
+      .logo-svg { height: 28px; width: 28px; }
+      .mobile-nav { top: 50px; }
+    }
+
+    @media (max-width: 768px) {
+      footer {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px 16px;
+        font-size: 12px;
+        gap: 16px;
+      }
+      .footer-left {
+        align-self: baseline;
+        text-align: center;
+        width: 100%;
+      }
+      .footer-right {
+        align-items: center;
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+      .footer-right a {
+        margin: 0;
+        font-size: 12px;
+      }
+      .foooter-row {
+        justify-content: center;
+        width: 100% !important;
+      }
+      .foooter-row:first-child {
+        justify-content: space-between;
+      }
+      .foooter-row:nth-child(2) {
+        width: auto;
+      }
+      .dd-link {
+        margin-left: auto !important;
+      }
+    }
+
+    @media screen and (max-width: 440px) {
+      .logo { gap: 10px; }
+      .logo h1 { font-size: 18px; }
+      header { padding: 12px; }
+      .mobile-nav { top: 48px; }
+    }
+
+    @media (max-width: 480px) {
+      .team-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+      }
+      .member-card {
+        padding: 0.75rem;
+      }
+      .page-intro h1 {
+        font-size: 1.4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="https://britishprogress.org" class="logo">
+      <span class="logo-svg"><svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M86.3961 120.713L79.1208 113.371L91.5521 101.037L101.573 104.516L86.4431 120.717L99.4969 199.66L114.45 114.452L199.676 99.487L114.44 85.3721L113.384 79.3576L113.344 79.0837L113.337 79.0911L99.5039 0.3125L85.4118 85.4109L0.328125 99.4801L79.1342 113.309L15.6108 176.861L28.5154 178.639L86.3961 120.713ZM183.277 23.7559L130.672 76.4024L122.954 69.4697L171.414 20.9881L183.277 23.7559Z" fill="#283131"/></svg></span>
+      <h1>Centre for British Progress</h1>
+    </a>
+    <nav class="desktop-nav">
+      <ul>
+        <li><a href="https://britishprogress.org/research">Research</a></li>
+        <li><a href="https://britishprogress.org/uk-day-one">UK Day One</a></li>
+        <li><a href="https://britishprogress.org/about">About</a></li>
+        <li><a href="https://britishprogress.org/opportunities">Opportunities</a></li>
+        <li><a href="https://britishprogress.org/contact">Contact</a></li>
+        <li><a href="https://britishprogress.org/search">Search</a></li>
+      </ul>
+    </nav>
+    <button class="burger-menu" id="burgerMenu" aria-label="Menu">
+      <div></div>
+      <div></div>
+      <div></div>
+    </button>
+  </header>
+  <div class="mobile-nav" id="mobileNav">
+    <nav>
+      <ul>
+        <li><a href="https://britishprogress.org/research">Research</a></li>
+        <li><a href="https://britishprogress.org/uk-day-one">UK Day One</a></li>
+        <li><a href="https://britishprogress.org/about">About</a></li>
+        <li><a href="https://britishprogress.org/opportunities">Opportunities</a></li>
+        <li><a href="https://britishprogress.org/contact">Contact</a></li>
+        <li><a href="https://britishprogress.org/search">Search</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="page-intro">
+    <h1>Book a Meeting</h1>
+    <p>Select one or more team members to generate a booking link.</p>
+  </div>
+
+  <div class="team-grid" id="teamGrid"></div>
+
+  <div class="booking-bar hidden" id="bookingBar">
+    <div class="max-msg" id="maxMsg">Maximum of 3 people per meeting</div>
+    <div class="selection-summary" id="selectionSummary"></div>
+    <div class="generated-url" id="generatedUrl"></div>
+    <a class="book-btn" id="bookBtn" href="#" target="_blank" rel="noopener">Book Meeting</a>
+  </div>
+
+  <footer>
+    <div class="footer-left">&copy; 2025–2026 Centre for British Progress</div>
+    <div class="footer-right">
+      <div class="foooter-row">
+        <a href="https://britishprogress.org/privacy">Privacy Policy</a>
+        <a href="https://britishprogress.org/cookies">Cookie Policy</a>
+        <a href="https://britishprogress.org/terms">Terms and Conditions</a>
+      </div>
+      <div class="foooter-row">
+        <a href="https://www.linkedin.com/company/britishprogress/" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Follow us on LinkedIn"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M14.3351 0.351562C14.7777 0.351563 15.2021 0.527386 15.5151 0.840353C15.8281 1.15332 16.0039 1.5778 16.0039 2.0204V13.7023C16.0039 14.1449 15.8281 14.5693 15.5151 14.8823C15.2021 15.1953 14.7777 15.3711 14.3351 15.3711H2.65321C2.21061 15.3711 1.78613 15.1953 1.47317 14.8823C1.1602 14.5693 0.984375 14.1449 0.984375 13.7023V2.0204C0.984375 1.5778 1.1602 1.15332 1.47317 0.840353C1.78613 0.527386 2.21061 0.351563 2.65321 0.351562H14.3351ZM13.9179 13.285V8.86263C13.9179 8.14119 13.6313 7.44929 13.1211 6.93916C12.611 6.42902 11.9191 6.14243 11.1977 6.14243C10.4884 6.14243 9.66233 6.57632 9.26181 7.22717V6.30097H6.93378V13.285H9.26181V9.17136C9.26181 8.52886 9.77915 8.00318 10.4216 8.00318C10.7315 8.00318 11.0286 8.12626 11.2477 8.34533C11.4668 8.56441 11.5898 8.86154 11.5898 9.17136V13.285H13.9179ZM4.22192 4.99093C4.59371 4.99093 4.95026 4.84324 5.21316 4.58034C5.47605 4.31745 5.62374 3.96089 5.62374 3.58911C5.62374 2.8131 4.99793 2.17894 4.22192 2.17894C3.84792 2.17894 3.48924 2.32751 3.22478 2.59197C2.96032 2.85642 2.81175 3.21511 2.81175 3.58911C2.81175 4.36512 3.44591 4.99093 4.22192 4.99093ZM5.38176 13.285V6.30097H3.07042V13.285H5.38176Z" fill="#FFFBEA"/></svg><span class="sr-only">LinkedIn</span></a>
+        <a href="https://britishprogress.substack.com/" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Subscribe to our newsletter"><svg width="15" height="16" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M14.0148 3.60449H0.015625V5.49546H14.0148V3.60449Z" fill="#FFFBEA"/><path d="M0.015625 7.20801V15.9998L7.01491 12.0734L14.0154 15.9998V7.20801H0.015625Z" fill="#FFFBEA"/><path d="M14.0148 0H0.015625V1.89066H14.0148V0Z" fill="#FFFBEA"/></svg><span class="sr-only">Newsletter</span></a>
+        <a href="https://x.com/britishprogress" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Follow us on X"><svg width="15" height="16" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M8.93669 6.85221L14.517 0.5H13.1951L8.34768 6.0144L4.47891 0.5H0.015625L5.86725 8.83955L0.015625 15.5H1.33752L6.45326 9.67535L10.5399 15.5H15.0031M1.81463 1.47619H3.84543L13.1941 14.5718H11.1628" fill="#FFFBEA"/></svg><span class="sr-only">X</span></a>
+        <a href="https://bsky.app/profile/britishprogress.org" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Bluesky"><svg fill="none" viewBox="0 0 64 57" width="17.5" height="16" aria-hidden="true"><path fill="#FFFBEA" d="M13.873 3.805C21.21 9.332 29.103 20.537 32 26.55v15.882c0-.338-.13.044-.41.867-1.512 4.456-7.418 21.847-20.923 7.944-7.111-7.32-3.819-14.64 9.125-16.85-7.405 1.264-15.73-.825-18.014-9.015C1.12 23.022 0 8.51 0 6.55 0-3.268 8.579-.182 13.873 3.805ZM50.127 3.805C42.79 9.332 34.897 20.537 32 26.55v15.882c0-.338.13.044.41.867 1.512 4.456 7.418 21.847 20.923 7.944 7.111-7.32 3.819-14.64-9.125-16.85 7.405 1.264 15.73-.825 18.014-9.015C62.88 23.022 64 8.51 64 6.55c0-9.818-8.578-6.732-13.873-2.745Z"/></svg><span class="sr-only">Bluesky</span></a>
+      </div>
+      <a href="https://and-now.co.uk/" class="dd-link" target="_blank">Website designed by AND-NOW</a>
+      <a href="https://kappa.work/" class="dd-link" target="_blank">Built by Kappa</a>
+    </div>
+  </footer>
+
+  <script>
+    const imgBase = "https://britishprogress.org/_next/image?w=828&q=75&url=%2Fapi%2Fmedia%2Ffile%2F";
+    const team = [
+      { first: "David", last: "Lawrence", role: "Co-founder", img: "PTAIT_20250305_9225.jpg" },
+      { first: "Julia", last: "Willemyns", role: "Co-founder", img: "julia-willemyns-1.webp" },
+      { first: "Maxx", last: "Turing", role: "COO", img: "maxx-turing-2025.png" },
+      { first: "Pedro", last: "Serôdio", role: "Chief Economist", img: "PTAIT_20250305_9117.jpg" },
+      { first: "Andrew", last: "Bennett", role: "Head of Special Projects", img: "PTAIT_20250305_9149.jpg" },
+      { first: "Freddie", last: "Poser", role: "Head of Product", img: "UKDayOne_Mar25_1_Landscape.jpg" },
+      { first: "Ed", last: "Hezlet", role: "Head of Energy", img: "1759309318363.webp" },
+      { first: "Alys", last: "Key", role: "Editor", img: "alys.webp" },
+      { first: "Kane", last: "Emerson", role: "Head of Communications", img: "PTAIT_20250305_9176%20(1).jpg" },
+      { first: "Tom", last: "Blake", role: "Policy Fellow — AI & Tech", img: "PTAIT_20250305_9284.jpg" },
+      { first: "Ezra", last: "Cohen", role: "Policy Fellow", img: "Ezra%20Cohen%20Headshot.webp" },
+      { first: "Matthew", last: "Stubbs", role: "Research & Data Analyst", img: "1730069043956.jpg" },
+      { first: "Esther", last: "Cain", role: "Operations Associate", img: "Esther%20C%20-%20headshot%20(3).webp" },
+      { first: "Matthew", last: "Grant", role: "Policy Fellow", img: "1764611598563%20(1).webp" },
+    ];
+
+    const selected = new Set();
+
+    function getSlug(index) {
+      const member = team[index];
+      const firstName = member.first.toLowerCase();
+      // Check if another team member shares this first name
+      const hasDuplicate = team.some((m, i) => i !== index && m.first === member.first);
+      if (hasDuplicate) {
+        return firstName + "-" + member.last[0].toLowerCase();
+      }
+      return firstName;
+    }
+
+    function buildUrl() {
+      const slugs = [...selected].sort((a, b) => a - b).map(getSlug);
+      if (slugs.length === 0) return "";
+      if (slugs.length === 1) return `https://meet-${slugs[0]}.britishprogress.org/`;
+      const last = slugs.pop();
+      return `https://meet-${slugs.join("-")}-and-${last}.britishprogress.org/`;
+    }
+
+    function buildSummary() {
+      const names = [...selected].sort((a, b) => a - b).map(i => team[i].first + " " + team[i].last);
+      if (names.length === 0) return "";
+      if (names.length === 1) return `Meeting with <span>${names[0]}</span>`;
+      const last = names.pop();
+      return `Meeting with <span>${names.join("</span>, <span>")}</span> and <span>${last}</span>`;
+    }
+
+    function update() {
+      const bar = document.getElementById("bookingBar");
+      const summary = document.getElementById("selectionSummary");
+      const urlDisplay = document.getElementById("generatedUrl");
+      const btn = document.getElementById("bookBtn");
+
+      if (selected.size === 0) {
+        bar.classList.add("hidden");
+        grid.classList.remove("max-reached");
+        return;
+      }
+
+      bar.classList.remove("hidden");
+      summary.innerHTML = buildSummary();
+      const url = buildUrl();
+      urlDisplay.textContent = url;
+      btn.href = url;
+
+      grid.classList.toggle("max-reached", selected.size >= 3);
+    }
+
+    // Burger menu toggle
+    const burger = document.getElementById('burgerMenu');
+    const mobileNav = document.getElementById('mobileNav');
+    burger.addEventListener('click', () => {
+      burger.classList.toggle('active');
+      mobileNav.classList.toggle('open');
+    });
+
+    // Render team grid
+    const grid = document.getElementById("teamGrid");
+    team.forEach((member, index) => {
+      const card = document.createElement("div");
+      card.className = "member-card";
+      card.innerHTML = `<img class="avatar" src="${imgBase}${member.img}" alt="${member.first} ${member.last}" loading="lazy"><div class="info"><div class="name">${member.first} ${member.last}</div><div class="role">${member.role}</div></div>`;
+      card.addEventListener("click", () => {
+        if (selected.has(index)) {
+          selected.delete(index);
+          card.classList.remove("selected");
+        } else if (selected.size < 3) {
+          selected.add(index);
+          card.classList.add("selected");
+        } else {
+          card.classList.add("shake");
+          setTimeout(() => card.classList.remove("shake"), 500);
+          const msg = document.getElementById("maxMsg");
+          msg.classList.add("visible");
+          setTimeout(() => msg.classList.remove("visible"), 2000);
+        }
+        update();
+      });
+      grid.appendChild(card);
+    });
+  </script>
+
+</body>
+</html>
