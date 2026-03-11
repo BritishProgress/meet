@@ -956,7 +956,7 @@
           <button class="method-btn" data-method="call">Call</button>
           <div class="sub-options" id="callOptions">
             <button class="sub-btn" data-calltype="video">Video call</button>
-            <button class="sub-btn" data-calltype="phone">Phone call</button>
+            <button class="sub-btn" data-calltype="phone" id="phoneBtn">Phone call</button>
           </div>
         </div>
       </div>
@@ -1153,7 +1153,13 @@
           locationOpts.classList.add('active');
           callOpts.classList.remove('active');
         } else if (selectedMethod === 'call') {
-          callOpts.classList.add('active');
+          if (selected.size >= 2) {
+            // Direct video call mode — no sub-options
+            selectedCallType = 'video';
+            callOpts.classList.remove('active');
+          } else {
+            callOpts.classList.add('active');
+          }
           locationOpts.classList.remove('active');
         }
         updateBookBtn();
@@ -1265,6 +1271,13 @@
       document.getElementById('teamGrid').classList.add('hidden');
       document.getElementById('stage2').classList.remove('hidden');
       document.querySelector('#pageIntro p').textContent = 'How would you like to meet?';
+      // For 2+ people: rename Call → Video call (direct, no sub-options)
+      const callBtn = document.querySelector('[data-method="call"]');
+      if (selected.size >= 2) {
+        callBtn.textContent = 'Video call';
+      } else {
+        callBtn.textContent = 'Call';
+      }
       window.scrollTo({ top: 0 });
 
       // Update URL hash
@@ -1333,6 +1346,7 @@
       document.querySelectorAll('.sub-btn').forEach(b => b.classList.remove('selected'));
       document.getElementById('locationOptions').classList.remove('active');
       document.getElementById('callOptions').classList.remove('active');
+      document.querySelector('[data-method="call"]').textContent = 'Call';
       document.getElementById('bookBtn').classList.add('hidden');
       document.getElementById('generatedUrl').classList.remove('visible');
 
@@ -1524,6 +1538,10 @@
         div.innerHTML = `<img src="${imgBase}${m.img}" alt="${m.first} ${m.last}"><div class="info"><div class="name">${m.first} ${m.last}</div><div class="role">${m.role}</div></div>`;
         peopleContainer.appendChild(div);
       });
+      // For 2+ people: rename Call → Video call
+      if (indices.length >= 2) {
+        document.querySelector('[data-method="call"]').textContent = 'Video call';
+      }
     })();
   </script>
 
