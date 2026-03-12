@@ -120,7 +120,7 @@
       text-align: center;
       line-height: 1.4;
       pointer-events: none;
-      transform: translateY(0);
+      transform: translateY(-100%);
       transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
       z-index: 499;
     }
@@ -1063,6 +1063,34 @@
 
     @media screen and (max-width: 990px) {
       .footer-right { gap: 10px; }
+
+      /* Stage 2: stack vertically at tablet widths */
+      .stage2 {
+        flex-direction: column;
+        padding: 1rem 1.5rem;
+      }
+      .stage2-left {
+        flex: none;
+        width: 100%;
+      }
+      .stage2-right {
+        flex: none;
+        width: 100%;
+      }
+
+      /* Iframe/placeholder: not sticky */
+      .booking-iframe {
+        height: 550px;
+        position: relative;
+        top: auto;
+      }
+      .iframe-placeholder {
+        height: auto;
+        padding: 2rem 1rem;
+        position: relative;
+        top: auto;
+        align-items: center;
+      }
     }
 
     @media screen and (max-width: 768px) {
@@ -1073,6 +1101,8 @@
       header { padding: 14px; height: 50px; }
       .logo-svg { height: 28px; width: 28px; }
       .mobile-nav { top: 50px; }
+      .star-toast.visible { transform: translateY(50px); }
+      .star-toast { font-size: 0.7rem; padding: 0.4rem 0.75rem; }
     }
 
     @media (max-width: 768px) {
@@ -1111,6 +1141,101 @@
       .dd-link {
         margin-left: auto !important;
       }
+
+      /* Stage 2: stack vertically */
+      .stage2 {
+        flex-direction: column;
+        padding: 1rem;
+      }
+      .stage2-left {
+        flex: none;
+        width: 100%;
+      }
+      .stage2-right {
+        flex: none;
+        width: 100%;
+      }
+
+      /* Iframe: shorter, not sticky */
+      .booking-iframe {
+        height: 550px;
+        position: relative;
+        top: auto;
+      }
+
+      /* Selected people cards: 2 per row, smaller photos */
+      .selected-person {
+        flex: 0 1 calc((100% - 0.75rem) / 2);
+        padding: 0.5rem;
+        gap: 0.4rem;
+      }
+      .selected-person img {
+        width: 40px;
+        height: 40px;
+      }
+      .selected-person .name {
+        font-size: 0.78rem;
+        white-space: nowrap;
+        margin-bottom: 0.1rem;
+      }
+      .selected-person .role {
+        font-size: 0.68rem;
+        line-height: 1.2;
+        min-height: calc(2 * 0.68rem * 1.2);
+      }
+
+      /* Stage 2 heading smaller */
+      .stage2-intro h1 {
+        font-size: 1.4rem;
+      }
+
+      /* Team grid: 2 columns, tighter gap and padding */
+      .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+        padding: 1rem 0.75rem;
+      }
+
+      /* Page intro: less top padding */
+      .page-intro {
+        padding: 1.5rem 1rem 0;
+      }
+
+      /* Member cards: smaller avatars, tighter layout */
+      .member-card {
+        padding: 0.5rem;
+        gap: 0.4rem;
+      }
+      .member-card .avatar {
+        width: 40px;
+        height: 40px;
+      }
+      .member-card .name {
+        font-size: 0.78rem;
+        white-space: nowrap;
+        line-height: 1.2;
+        margin-bottom: 0.1rem;
+      }
+      .member-card .role {
+        font-size: 0.68rem;
+        line-height: 1.2;
+        min-height: calc(2 * 0.68rem * 1.2);
+      }
+
+      /* Info bubble: reposition below button */
+      .info-bubble {
+        left: 0;
+        top: calc(100% + 8px);
+        transform: none;
+        width: 250px;
+        z-index: 100;
+      }
+      .info-bubble-arrow {
+        display: none;
+      }
+      .sub-btn-with-info {
+        z-index: 100;
+      }
     }
 
     @media screen and (max-width: 440px) {
@@ -1121,13 +1246,6 @@
     }
 
     @media (max-width: 480px) {
-      .team-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 0.5rem;
-      }
-      .member-card {
-        padding: 0.75rem;
-      }
       .page-intro h1 {
         font-size: 1.4rem;
       }
