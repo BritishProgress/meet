@@ -693,6 +693,50 @@
       min-width: 0;
     }
 
+    .stage2-intro {
+      text-align: center;
+      width: 100%;
+    }
+
+    .stage2-intro h1 {
+      font-size: 1.75rem;
+      font-weight: 550;
+      margin-bottom: 0.5rem;
+      color: #0B4938;
+    }
+
+    .stage2-subtitle {
+      color: #283131;
+      opacity: 0.6;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .stage2 .back-btn,
+    .stage2 .stage2-subtitle,
+    .stage2 .method-step,
+    .stage2 .stage2-right {
+      opacity: 0;
+    }
+
+    .stage2.animate-in .back-btn { animation: fadeSlideIn 0.35s ease forwards 0.25s; }
+    .stage2.animate-in .stage2-subtitle { animation: fadeSlideIn 0.35s ease forwards 0.35s; }
+    .stage2.animate-in .method-step { animation: fadeSlideIn 0.35s ease forwards 0.4s; }
+    .stage2.animate-in .stage2-right { animation: fadeSlideIn 0.35s ease forwards 0.3s; }
+
+    .stage2.no-animate .back-btn,
+    .stage2.no-animate .stage2-subtitle,
+    .stage2.no-animate .method-step,
+    .stage2.no-animate .stage2-right {
+      opacity: 1;
+    }
+
     .stage2-right {
       flex: 0 0 calc(50% - 1.5rem);
       min-width: 0;
@@ -1035,8 +1079,12 @@
   <!-- Stage 2: Method selection -->
   <div class="stage2 hidden" id="stage2">
       <div class="stage2-left">
-        <div class="selected-people" id="selectedPeople"></div>
+        <div class="stage2-intro">
+          <h1>Book a Meeting</h1>
+        </div>
         <button class="back-btn" id="backBtn">&larr; Change people</button>
+        <div class="selected-people" id="selectedPeople"></div>
+        <p class="stage2-subtitle" id="stage2Subtitle">How would you like to meet?</p>
 
         <div class="method-step">
           <div class="method-options">
@@ -1498,6 +1546,11 @@
         startPositions[i] = { top: rect.top + scrollY, left: rect.left, width: rect.width, height: rect.height };
       });
 
+      // Capture heading position for FLIP
+      const oldH1 = document.querySelector('#pageIntro h1');
+      const oldH1Rect = oldH1.getBoundingClientRect();
+      const oldH1Top = oldH1Rect.top + scrollY;
+
       // Build stage 2 cards
       const peopleContainer = document.getElementById('selectedPeople');
       peopleContainer.innerHTML = '';
@@ -1513,7 +1566,10 @@
       // Switch stages
       document.getElementById('bookingBar').classList.add('hidden');
       document.getElementById('teamGrid').classList.add('hidden');
-      document.getElementById('stage2').classList.remove('hidden');
+      const stage2El = document.getElementById('stage2');
+      stage2El.classList.remove('hidden', 'no-animate');
+      stage2El.classList.add('animate-in');
+      document.getElementById('pageIntro').classList.add('hidden');
       document.querySelector('#pageIntro p').textContent = 'How would you like to meet?';
       // For 2+ people: rename Call → Video call (direct, no sub-options)
       const callBtn = document.querySelector('[data-method="call"]');
@@ -1534,6 +1590,24 @@
 
       // FLIP: compare absolute page positions (scroll-independent)
       requestAnimationFrame(() => {
+        // FLIP heading
+        const newH1 = document.querySelector('.stage2-intro h1');
+        const newH1Rect = newH1.getBoundingClientRect();
+        const newH1Top = newH1Rect.top + window.scrollY;
+        const h1dx = oldH1Rect.left - newH1Rect.left;
+        const h1dy = oldH1Top - newH1Top;
+        newH1.style.transform = `translate(${h1dx}px, ${h1dy}px)`;
+        newH1.style.transition = 'none';
+        requestAnimationFrame(() => {
+          newH1.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)';
+          newH1.style.transform = 'translate(0, 0)';
+          newH1.addEventListener('transitionend', () => {
+            newH1.style.transform = '';
+            newH1.style.transition = '';
+          }, { once: true });
+        });
+
+        // FLIP cards
         const newCards = peopleContainer.querySelectorAll('.selected-person');
         newCards.forEach(card => {
           const i = parseInt(card.dataset.index);
@@ -1577,8 +1651,10 @@
 
       // Switch stages
       document.getElementById('stage2').classList.add('hidden');
+      document.getElementById('stage2').classList.remove('animate-in', 'no-animate');
       document.getElementById('teamGrid').classList.remove('hidden');
       document.getElementById('bookingBar').classList.remove('hidden');
+      document.getElementById('pageIntro').classList.remove('hidden');
       document.querySelector('#pageIntro p').textContent = 'Select one or more team members to generate a booking link.';
       history.replaceState(null, '', window.location.pathname);
 
@@ -1777,6 +1853,8 @@
       document.getElementById('bookingBar').classList.add('hidden');
       document.getElementById('teamGrid').classList.add('hidden');
       document.getElementById('stage2').classList.remove('hidden');
+      document.getElementById('stage2').classList.add('no-animate');
+      document.getElementById('pageIntro').classList.add('hidden');
       document.querySelector('#pageIntro p').textContent = 'How would you like to meet?';
 
       const peopleContainer = document.getElementById('selectedPeople');
