@@ -1604,11 +1604,23 @@
 
       const cc = [...selected].sort((a, b) => a - b).map(i => team[i].email).join(', ');
 
+      const subjectNames = names.length > 3
+        ? `${names.length} team members`
+        : nameList;
+
+      const bodyNames = names.length > 3
+        ? names.map(n => '- ' + n).join('\n')
+        : nameList;
+
+      const bodyIntro = names.length > 3
+        ? `I'd like to request ${/^[aeiou]/i.test(methodText) ? 'an' : 'a'} ${methodText} with the following team members:\n\n${bodyNames}`
+        : `I'd like to request ${/^[aeiou]/i.test(methodText) ? 'an' : 'a'} ${methodText} with ${bodyNames}.`;
+
       return {
         to: 'office@britishprogress.org',
         cc: cc,
-        subject: `Meeting Request \u2014 ${methodText} with ${nameList}`,
-        body: `Hi,\n\nI'd like to request ${/^[aeiou]/i.test(methodText) ? 'an' : 'a'} ${methodText} with ${nameList}.\n\nMy preferred times are:\n- [Please add your preferred date/time options here]\n\nThank you`
+        subject: `Meeting Request \u2014 ${methodText} with ${subjectNames}`,
+        body: `Hi,\n\n${bodyIntro}\n\nMy preferred times are:\n- [Please add your preferred date/time options here]\n\nThank you`
       };
     }
 
