@@ -931,6 +931,11 @@
       display: none;
     }
 
+    .stage2-subtitle.hidden,
+    .method-step.hidden {
+      display: none;
+    }
+
     .book-btn.hidden {
       display: none;
     }
@@ -1264,6 +1269,17 @@
     // Load booking URL config
     let bookingUrls = {};
     const bookingUrlsReady = fetch('booking-urls.json').then(r => r.json()).then(data => { bookingUrls = data; }).catch(() => {});
+
+    // Direct booking overrides: skip method selection and load iframe directly
+    // Key: comma-separated sorted team indices, Value: iframe URL
+    const directBookingOverrides = {
+      '2': 'https://calendly.com/maxx-centre-for-british-progress/30min', // Maxx only
+    };
+
+    function getDirectBookingUrl() {
+      const key = [...selected].sort((a, b) => a - b).join(',');
+      return directBookingOverrides[key] || null;
+    }
 
     const imgBase = "https://britishprogress.org/_next/image?w=828&q=75&url=%2Fapi%2Fmedia%2Ffile%2F";
     const team = [
@@ -1712,6 +1728,17 @@
       }
       window.scrollTo({ top: 0 });
 
+      // Check for direct booking override
+      const directUrl = getDirectBookingUrl();
+      if (directUrl) {
+        document.getElementById('stage2Subtitle').classList.add('hidden');
+        document.querySelector('.method-step').classList.add('hidden');
+        document.getElementById('iframePlaceholder').classList.add('hidden');
+        const iframe = document.getElementById('bookingIframe');
+        iframe.src = directUrl;
+        iframe.classList.remove('hidden');
+      }
+
       // Update URL hash
       const slugs = selectedCards.map(getSlug);
       if (slugs.length === 1) history.replaceState(null, '', '#' + slugs[0]);
@@ -1820,6 +1847,10 @@
         if (window._iframeTimeout) clearTimeout(window._iframeTimeout);
         document.getElementById('stage2Right').classList.remove('visible');
         stage2El.classList.remove('has-iframe');
+
+        // Reset direct booking overrides
+        document.getElementById('stage2Subtitle').classList.remove('hidden');
+        document.querySelector('.method-step').classList.remove('hidden');
 
         window.scrollTo({ top: 0 });
 
@@ -1956,6 +1987,9 @@
       });
     }
 
+    // Reload on hash change (e.g. user edits URL bar)
+    window.addEventListener('hashchange', () => location.reload());
+
     // Restore state from URL hash on load
     (function restoreFromHash() {
       const rawHash = window.location.hash.slice(1);
@@ -2031,8 +2065,19 @@
         document.querySelector('[data-method="call"]').textContent = 'Video call';
       }
 
+      // Check for direct booking override
+      const directUrl = getDirectBookingUrl();
+      if (directUrl) {
+        document.getElementById('stage2Subtitle').classList.add('hidden');
+        document.querySelector('.method-step').classList.add('hidden');
+        document.getElementById('iframePlaceholder').classList.add('hidden');
+        const iframe = document.getElementById('bookingIframe');
+        iframe.src = directUrl;
+        iframe.classList.remove('hidden');
+      }
+
       // Restore method from URL
-      if (methodParam) {
+      if (!directUrl && methodParam) {
         if (methodParam === 'office' || methodParam === 'in-person') {
           const inPersonBtn = document.querySelector('[data-method="in-person"]');
           inPersonBtn.classList.add('selected');
