@@ -1284,6 +1284,7 @@
     ];
 
     const selected = new Set();
+    let unlimitedMode = false;
 
     // Suggestion rules: ordered by likelihood of being in a meeting together
     const suggestions = {
@@ -2003,6 +2004,7 @@
         selected.add(i);
         grid.children[i].classList.add('selected');
       });
+
       update();
 
       // Go straight to stage 2 (no animation)
@@ -2078,7 +2080,6 @@
     });
 
     // Secret: click star to unlock unlimited mode
-    let unlimitedMode = false;
     document.querySelector('.logo-svg').addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
