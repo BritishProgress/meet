@@ -70,10 +70,14 @@
       font-style: normal;
       color: #293131;
       gap: 18px;
-      text-decoration: none;
-      cursor: pointer;
       display: flex;
       align-items: center;
+      position: relative;
+    }
+
+    .logo a {
+      text-decoration: none;
+      color: inherit;
     }
 
     .logo h1 {
@@ -91,6 +95,56 @@
       height: 40px;
       display: flex;
       align-items: center;
+      cursor: pointer;
+    }
+
+    .logo-svg.spin {
+      animation: starSpin 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+
+    .logo-svg.unlimited svg path {
+      fill: #f5c542;
+      transition: fill 0.3s ease;
+    }
+
+
+    .star-toast {
+      position: fixed;
+      top: 0;
+      background: #283131;
+      color: #f5c542;
+      font-size: 0.8rem;
+      font-weight: 550;
+      padding: 0.5rem 1rem;
+      border-radius: 0 0 8px 8px;
+      text-align: center;
+      line-height: 1.4;
+      pointer-events: none;
+      transform: translateY(0);
+      transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+      z-index: 499;
+    }
+
+    .star-toast.visible {
+      transform: translateY(80px);
+    }
+
+    @keyframes starSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .glitter {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      font-size: 10px;
+      animation: glitterFade 0.6s ease-out forwards;
+    }
+
+    @keyframes glitterFade {
+      0% { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); }
+      100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0) rotate(180deg); }
     }
 
     nav ul {
@@ -199,6 +253,21 @@
       opacity: 0.6;
       font-size: 0.95rem;
       line-height: 1.5;
+    }
+
+    .page-intro h1.fade-in {
+      animation: fadeSlideIn 0.35s ease forwards 0.1s;
+      opacity: 0;
+    }
+
+    .page-intro p.fade-in {
+      animation: fadeSlideIn 0.35s ease forwards 0.15s;
+      opacity: 0;
+    }
+
+    .member-card.fade-in {
+      animation: fadeSlideIn 0.3s ease forwards;
+      opacity: 0;
     }
 
     .team-grid {
@@ -718,6 +787,16 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    @keyframes fadeSlideOut {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(12px); }
+    }
+
+    .stage2.animate-out .back-btn { animation: fadeSlideOut 0.25s ease forwards 0s; }
+    .stage2.animate-out .stage2-subtitle { animation: fadeSlideOut 0.25s ease forwards 0s; }
+    .stage2.animate-out .method-step { animation: fadeSlideOut 0.25s ease forwards 0.05s; }
+    .stage2.animate-out .stage2-right { animation: fadeSlideOut 0.25s ease forwards 0.05s; }
+
     .stage2 .back-btn,
     .stage2 .stage2-subtitle,
     .stage2 .method-step,
@@ -779,6 +858,7 @@
 
     .selected-people {
       display: flex;
+      flex-wrap: wrap;
       gap: 0.75rem;
       justify-content: center;
       width: 100%;
@@ -786,6 +866,27 @@
 
     .selected-person {
       flex: 0 1 calc((100% - 1.5rem) / 3);
+      min-width: 0;
+    }
+
+    .selected-people.compact .selected-person {
+      flex: 0 1 auto;
+      padding: 0.4rem 0.6rem;
+      gap: 0.4rem;
+    }
+
+    .selected-people.compact .selected-person img {
+      width: 28px;
+      height: 28px;
+    }
+
+    .selected-people.compact .selected-person .name {
+      font-size: 0.75rem;
+      white-space: nowrap;
+    }
+
+    .selected-people.compact .selected-person .role {
+      display: none;
     }
 
     .selected-person {
@@ -934,6 +1035,7 @@
       visibility: visible;
     }
 
+
     .shake {
       animation: shake 0.4s ease;
     }
@@ -1029,10 +1131,10 @@
 <body>
 
   <header>
-    <a href="https://britishprogress.org" class="logo">
+    <div class="logo">
       <span class="logo-svg"><svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M86.3961 120.713L79.1208 113.371L91.5521 101.037L101.573 104.516L86.4431 120.717L99.4969 199.66L114.45 114.452L199.676 99.487L114.44 85.3721L113.384 79.3576L113.344 79.0837L113.337 79.0911L99.5039 0.3125L85.4118 85.4109L0.328125 99.4801L79.1342 113.309L15.6108 176.861L28.5154 178.639L86.3961 120.713ZM183.277 23.7559L130.672 76.4024L122.954 69.4697L171.414 20.9881L183.277 23.7559Z" fill="#283131"/></svg></span>
-      <h1>Centre for British Progress</h1>
-    </a>
+      <a href="https://britishprogress.org"><h1>Centre for British Progress</h1></a>
+    </div>
     <nav class="desktop-nav">
       <ul>
         <li><a href="https://britishprogress.org/research">Research</a></li>
@@ -1049,6 +1151,7 @@
       <div></div>
     </button>
   </header>
+  <span class="star-toast" id="starToast">✨ Unlimited mode activated ✨<br><span style="font-weight:400;font-size:0.7rem;color:#ccc;">Select as many meeting participants as you want!</span></span>
   <div class="mobile-nav" id="mobileNav">
     <nav>
       <ul>
@@ -1182,35 +1285,50 @@
 
     const selected = new Set();
 
-    // Suggestion rules based on org chart reporting lines
+    // Suggestion rules: ordered by likelihood of being in a meeting together
     const suggestions = {
-      0: [1, 3, 6, 8, 13, 10, 5],      // David → Julia, Pedro, Ed, Kane, Matthew G, Ezra, Freddie
-      1: [0, 2, 7, 4],                 // Julia → David, Maxx, Alys, Andrew
-      2: [1, 12],                      // Maxx → Julia, Esther
-      3: [0, 11],                      // Pedro → David, Matthew S
-      4: [1],                          // Andrew → Julia
-      5: [0],                          // Freddie → David
-      6: [0],                          // Ed → David
-      7: [1],                          // Alys → Julia
-      8: [0],                          // Kane → David
-      9: [1, 2],                       // Tom → Julia, Maxx
-      10: [0],                         // Ezra → David
-      11: [3],                         // Matthew S → Pedro
-      12: [2],                         // Esther → Maxx
-      13: [0],                         // Matthew G → David
+      0: [1, 3, 6, 8, 10, 5],  // David → Julia, Pedro, Ed, Kane, Ezra, Freddie
+      1: [0, 2, 7, 4, 9],             // Julia → David, Maxx, Alys, Andrew, Tom
+      2: [1, 12, 0, 9],               // Maxx → Julia, Esther, David, Tom
+      3: [0, 11, 1],                   // Pedro → David, Matthew S, Julia
+      4: [1, 0],                       // Andrew → Julia, David
+      5: [0, 6, 1],                    // Freddie → David, Ed, Julia
+      6: [0, 5, 1],                    // Ed → David, Freddie, Julia
+      7: [1, 0, 4],                    // Alys → Julia, David, Andrew
+      8: [0, 1, 7],                    // Kane → David, Julia, Alys
+      9: [1, 2, 0],                    // Tom → Julia, Maxx, David
+      10: [0, 13, 1],                  // Ezra → David, Matthew G, Julia
+      11: [3, 0],                      // Matthew S → Pedro, David
+      12: [2, 1],                      // Esther → Maxx, Julia
+      13: [0, 10, 1],                  // Matthew G → David, Ezra, Julia
     };
 
     function getSuggested() {
-      const suggested = new Set();
-      if (selected.size >= 3) return suggested;
+      const maxHighlighted = 6;
+      const maxSuggestions = Math.max(0, maxHighlighted - selected.size);
+      if (maxSuggestions === 0) return new Set();
+
+      // Score each candidate by relevance to selected people
+      // Earlier position in a person's suggestion list = higher score
+      const scores = {};
       selected.forEach(i => {
         if (suggestions[i]) {
-          suggestions[i].forEach(s => {
-            if (!selected.has(s)) suggested.add(s);
+          suggestions[i].forEach((s, pos) => {
+            if (!selected.has(s)) {
+              const weight = suggestions[i].length - pos; // higher for earlier entries
+              scores[s] = (scores[s] || 0) + weight;
+            }
           });
         }
       });
-      return suggested;
+
+      // Sort by score descending, take top N
+      const ranked = Object.entries(scores)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, maxSuggestions)
+        .map(([idx]) => parseInt(idx));
+
+      return new Set(ranked);
     }
 
     function getSlug(index) {
@@ -1290,7 +1408,7 @@
       updateOfficeBtn();
       updateBookBtn();
 
-      grid.classList.toggle("max-reached", selected.size >= 3);
+      grid.classList.toggle("max-reached", !unlimitedMode && selected.size >= 3);
     }
 
     let selectedMethod = null;
@@ -1554,6 +1672,7 @@
       // Build stage 2 cards
       const peopleContainer = document.getElementById('selectedPeople');
       peopleContainer.innerHTML = '';
+      peopleContainer.classList.toggle('compact', selectedCards.length > 3);
       selectedCards.forEach(i => {
         const m = team[i];
         const div = document.createElement('div');
@@ -1637,74 +1756,99 @@
     });
 
     document.getElementById('backBtn').addEventListener('click', () => {
-      const peopleContainer = document.getElementById('selectedPeople');
-      const stage2Cards = peopleContainer.querySelectorAll('.selected-person');
+      const stage2El = document.getElementById('stage2');
 
-      // Capture absolute page positions of stage 2 cards
-      const startPositions = {};
-      const scrollY = window.scrollY;
-      stage2Cards.forEach(card => {
-        const i = parseInt(card.dataset.index);
-        const rect = card.getBoundingClientRect();
-        startPositions[i] = { top: rect.top + scrollY, left: rect.left, width: rect.width, height: rect.height };
-      });
+      // Start animate-out
+      stage2El.classList.remove('animate-in', 'no-animate');
+      stage2El.classList.add('animate-out');
 
-      // Switch stages
-      document.getElementById('stage2').classList.add('hidden');
-      document.getElementById('stage2').classList.remove('animate-in', 'no-animate');
-      document.getElementById('teamGrid').classList.remove('hidden');
-      document.getElementById('bookingBar').classList.remove('hidden');
-      document.getElementById('pageIntro').classList.remove('hidden');
-      document.querySelector('#pageIntro p').textContent = 'Select one or more team members to generate a booking link.';
-      history.replaceState(null, '', window.location.pathname);
+      // Wait for the longest animation to finish (0.1s delay + 0.25s duration = 0.35s)
+      setTimeout(() => {
+        const peopleContainer = document.getElementById('selectedPeople');
+        const stage2Cards = peopleContainer.querySelectorAll('.selected-person');
 
-      // Reset method selections
-      selectedMethod = null;
-      selectedLocation = null;
-      selectedCallType = null;
-      document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('selected'));
-      document.querySelectorAll('.sub-btn').forEach(b => b.classList.remove('selected'));
-      document.getElementById('locationOptions').classList.remove('active');
-      document.getElementById('callOptions').classList.remove('active');
-      document.querySelector('[data-method="call"]').textContent = 'Call';
-      document.getElementById('bookBtn').classList.add('hidden');
-      document.getElementById('generatedUrl').classList.remove('visible');
-      document.getElementById('bookingIframe').src = 'about:blank';
-      document.getElementById('bookingIframe').onload = null;
-      if (window._iframeTimeout) clearTimeout(window._iframeTimeout);
-      document.getElementById('stage2Right').classList.remove('visible');
-      document.getElementById('stage2').classList.remove('has-iframe');
+        // Capture absolute page positions of stage 2 cards
+        const startPositions = {};
+        const scrollY = window.scrollY;
+        stage2Cards.forEach(card => {
+          const i = parseInt(card.dataset.index);
+          const rect = card.getBoundingClientRect();
+          startPositions[i] = { top: rect.top + scrollY, left: rect.left, width: rect.width, height: rect.height };
+        });
 
-      window.scrollTo({ top: 0 });
+        // Switch stages
+        stage2El.classList.add('hidden');
+        stage2El.classList.remove('animate-out');
+        document.getElementById('teamGrid').classList.remove('hidden');
+        document.getElementById('bookingBar').classList.remove('hidden');
+        document.getElementById('pageIntro').classList.remove('hidden');
+        const introH1 = document.querySelector('#pageIntro h1');
+        introH1.classList.add('fade-in');
+        introH1.addEventListener('animationend', () => introH1.classList.remove('fade-in'), { once: true });
+        const introP = document.querySelector('#pageIntro p');
+        introP.textContent = 'Select one or more team members to generate a booking link.';
+        introP.classList.add('fade-in');
+        introP.addEventListener('animationend', () => introP.classList.remove('fade-in'), { once: true });
+        history.replaceState(null, '', window.location.pathname);
 
-      // FLIP: compare absolute page positions
-      requestAnimationFrame(() => {
-        [...selected].forEach(i => {
-          const card = grid.children[i];
-          const endRect = card.getBoundingClientRect();
-          const endTop = endRect.top + window.scrollY;
-          const start = startPositions[i];
-          if (!start) return;
-          const dx = start.left - endRect.left;
-          const dy = start.top - endTop;
-          const sx = start.width / endRect.width;
-          const sy = start.height / endRect.height;
+        // Reset method selections
+        selectedMethod = null;
+        selectedLocation = null;
+        selectedCallType = null;
+        document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('selected'));
+        document.querySelectorAll('.sub-btn').forEach(b => b.classList.remove('selected'));
+        document.getElementById('locationOptions').classList.remove('active');
+        document.getElementById('callOptions').classList.remove('active');
+        document.querySelector('[data-method="call"]').textContent = 'Call';
+        document.getElementById('bookBtn').classList.add('hidden');
+        document.getElementById('generatedUrl').classList.remove('visible');
+        document.getElementById('bookingIframe').src = 'about:blank';
+        document.getElementById('bookingIframe').onload = null;
+        if (window._iframeTimeout) clearTimeout(window._iframeTimeout);
+        document.getElementById('stage2Right').classList.remove('visible');
+        stage2El.classList.remove('has-iframe');
 
-          card.style.transform = `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`;
-          card.style.transformOrigin = 'top left';
-          card.style.transition = 'none';
+        window.scrollTo({ top: 0 });
 
-          requestAnimationFrame(() => {
-            card.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)';
-            card.style.transform = 'translate(0, 0) scale(1, 1)';
-            card.addEventListener('transitionend', () => {
-              card.style.transform = '';
-              card.style.transition = '';
-              card.style.transformOrigin = '';
-            }, { once: true });
+        // FLIP: compare absolute page positions + fade in non-selected cards
+        requestAnimationFrame(() => {
+          // Fade in non-selected cards
+          for (let i = 0; i < grid.children.length; i++) {
+            if (!selected.has(i)) {
+              const card = grid.children[i];
+              card.classList.add('fade-in');
+              card.addEventListener('animationend', () => card.classList.remove('fade-in'), { once: true });
+            }
+          }
+
+          // FLIP selected cards back
+          [...selected].forEach(i => {
+            const card = grid.children[i];
+            const endRect = card.getBoundingClientRect();
+            const endTop = endRect.top + window.scrollY;
+            const start = startPositions[i];
+            if (!start) return;
+            const dx = start.left - endRect.left;
+            const dy = start.top - endTop;
+            const sx = start.width / endRect.width;
+            const sy = start.height / endRect.height;
+
+            card.style.transform = `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`;
+            card.style.transformOrigin = 'top left';
+            card.style.transition = 'none';
+
+            requestAnimationFrame(() => {
+              card.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)';
+              card.style.transform = 'translate(0, 0) scale(1, 1)';
+              card.addEventListener('transitionend', () => {
+                card.style.transform = '';
+                card.style.transition = '';
+                card.style.transformOrigin = '';
+              }, { once: true });
+            });
           });
         });
-      });
+      }, 350);
     });
 
     // Office info toggle
@@ -1745,7 +1889,7 @@
         if (selected.has(index)) {
           selected.delete(index);
           card.classList.remove("selected");
-        } else if (selected.size < 3) {
+        } else if (unlimitedMode || selected.size < 3) {
           selected.add(index);
           card.classList.add("selected");
         } else {
@@ -1859,6 +2003,7 @@
 
       const peopleContainer = document.getElementById('selectedPeople');
       peopleContainer.innerHTML = '';
+      peopleContainer.classList.toggle('compact', indices.length > 3);
       indices.sort((a, b) => a - b).forEach(i => {
         const m = team[i];
         const div = document.createElement('div');
@@ -1899,6 +2044,53 @@
         bookingUrlsReady.then(() => updateBookBtn());
       }
     })();
+
+    // Glitter effect on star hover
+    const glitterChars = ['✦', '✧', '✶', '⋆', '✹'];
+    const glitterColors = ['#f5c542', '#f0b020', '#ffe066', '#ffd700', '#fff3a0'];
+    document.querySelector('.logo-svg').addEventListener('mousemove', (e) => {
+      if (Math.random() > 0.7) return; // throttle
+      const spark = document.createElement('span');
+      spark.className = 'glitter';
+      spark.textContent = glitterChars[Math.floor(Math.random() * glitterChars.length)];
+      spark.style.color = glitterColors[Math.floor(Math.random() * glitterColors.length)];
+      spark.style.left = e.clientX + (Math.random() * 16 - 8) + 'px';
+      spark.style.top = e.clientY + (Math.random() * 16 - 8) + 'px';
+      spark.style.fontSize = (8 + Math.random() * 8) + 'px';
+      const angle = Math.random() * Math.PI * 2;
+      const dist = 20 + Math.random() * 25;
+      spark.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+      spark.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
+      document.body.appendChild(spark);
+      spark.addEventListener('animationend', () => spark.remove());
+    });
+
+    // Secret: click star to unlock unlimited mode
+    let unlimitedMode = false;
+    document.querySelector('.logo-svg').addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const star = document.querySelector('.logo-svg');
+      star.classList.remove('spin');
+      void star.offsetWidth; // force reflow
+      star.classList.add('spin');
+      unlimitedMode = !unlimitedMode;
+      star.classList.toggle('unlimited', unlimitedMode);
+      grid.classList.toggle('max-reached', !unlimitedMode && selected.size >= 3);
+      const toast = document.getElementById('starToast');
+      const logoRect = document.querySelector('.logo').getBoundingClientRect();
+      toast.style.left = logoRect.left + 'px';
+      toast.style.width = logoRect.width + 'px';
+      if (unlimitedMode) {
+        toast.style.color = '#f5c542';
+        toast.innerHTML = '✨ Unlimited mode activated ✨<br><span style="font-weight:400;font-size:0.7rem;color:#ccc;">Select as many meeting participants as you want!</span>';
+      } else {
+        toast.style.color = '#f87171';
+        toast.innerHTML = '⛔ Unlimited mode deactivated ⛔<br><span style="font-weight:400;font-size:0.7rem;color:#ccc;">Back to a maximum of 3 people per meeting</span>';
+      }
+      toast.classList.add('visible');
+      setTimeout(() => toast.classList.remove('visible'), 3500);
+    });
   </script>
 
 </body>
