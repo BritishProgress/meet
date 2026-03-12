@@ -2063,6 +2063,7 @@
     const glitterChars = ['✦', '✧', '✶', '⋆', '✹'];
     const glitterColors = ['#f5c542', '#f0b020', '#ffe066', '#ffd700', '#fff3a0'];
     document.querySelector('.logo-svg').addEventListener('mousemove', (e) => {
+      if (!document.getElementById('stage2').classList.contains('hidden')) return; // no glitter on stage 2
       if (Math.random() > 0.7) return; // throttle
       const spark = document.createElement('span');
       spark.className = 'glitter';
@@ -2079,16 +2080,37 @@
       spark.addEventListener('animationend', () => spark.remove());
     });
 
-    // Secret: click star to unlock unlimited mode
+    // Star click: unlimited mode on stage 1, navigate home on stage 2
     document.querySelector('.logo-svg').addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
+
+      // If on stage 2, go back to root
+      if (!document.getElementById('stage2').classList.contains('hidden')) {
+        window.location.href = window.location.pathname;
+        return;
+      }
+
+      // Stage 1: toggle unlimited mode
       const star = document.querySelector('.logo-svg');
       star.classList.remove('spin');
-      void star.offsetWidth; // force reflow
+      void star.offsetWidth;
       star.classList.add('spin');
       unlimitedMode = !unlimitedMode;
       star.classList.toggle('unlimited', unlimitedMode);
+
+      // If turning off with >3 selected, trim back to 3
+      if (!unlimitedMode && selected.size > 3) {
+        const keep = [...selected].sort((a, b) => a - b).slice(0, 3);
+        selected.forEach(i => {
+          if (!keep.includes(i)) {
+            selected.delete(i);
+            grid.children[i].classList.remove('selected');
+          }
+        });
+        update();
+        reorderGrid();
+      }
       grid.classList.toggle('max-reached', !unlimitedMode && selected.size >= 3);
       const toast = document.getElementById('starToast');
       const logoRect = document.querySelector('.logo').getBoundingClientRect();
