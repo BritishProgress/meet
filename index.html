@@ -1763,11 +1763,15 @@
         ? `I'd like to request ${/^[aeiou]/i.test(methodText) ? 'an' : 'a'} ${methodText} with the following team members:\n\n${bodyNames}`
         : `I'd like to request ${/^[aeiou]/i.test(methodText) ? 'an' : 'a'} ${methodText} with ${bodyNames}.`;
 
+      const locationLine = (selectedMethod === 'in-person' && selectedLocation === 'other')
+        ? `\n\nMy preferred location is:\n- [Please add your preferred location here]`
+        : '';
+
       return {
         to: 'office@britishprogress.org',
         cc: cc,
         subject: `Meeting Request \u2014 ${methodText} with ${subjectNames}`,
-        body: `Hi,\n\n${bodyIntro}\n\nMy preferred times are:\n- [Please add your preferred date/time options here]\n\nThank you`
+        body: `Hi,\n\n${bodyIntro}${locationLine}\n\nMy preferred times are:\n- [Please add your preferred date/time options here]\n\nThank you`
       };
     }
 
