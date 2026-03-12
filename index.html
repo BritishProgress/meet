@@ -1439,7 +1439,7 @@
       return {
         to: 'office@britishprogress.org',
         subject: `Meeting Request \u2014 ${methodText} with ${nameList}`,
-        body: `Hi,\n\nI'd like to request a ${methodText} with ${nameList}.\n\nMy preferred times are:\n- [Please add your preferred date/time options here]\n\nThank you`
+        body: `Hi,\n\nI'd like to request ${/^[aeiou]/i.test(methodText) ? 'an' : 'a'} ${methodText} with ${nameList}.\n\nMy preferred times are:\n- [Please add your preferred date/time options here]\n\nThank you`
       };
     }
 
