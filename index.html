@@ -1327,7 +1327,6 @@
     const checkIconSvg = '<svg class="copy-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 8.5L6.5 12L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
     function updateBookBtn() {
-      console.log('[DEBUG] updateBookBtn called', { selectedMethod, selectedLocation, selectedCallType, selectedSize: selected.size, bookingUrlsKeys: Object.keys(bookingUrls).length });
       const bookBtn = document.getElementById('bookBtn');
       const urlDisplay = document.getElementById('generatedUrl');
       let urlText = urlDisplay.querySelector('.url-text');
@@ -1339,12 +1338,10 @@
         (selectedMethod === 'in-person' && selectedLocation) ||
         (selectedMethod === 'call' && selectedCallType)
       );
-      console.log('[DEBUG] ready:', ready);
       const iframe = document.getElementById('bookingIframe');
       const placeholder = document.getElementById('iframePlaceholder');
       if (ready && selected.size > 0) {
         const url = buildUrl();
-        console.log('[DEBUG] url:', url);
         urlText.textContent = url;
         urlDisplay.classList.add('visible');
         urlDisplay.classList.remove('copied');
@@ -1354,14 +1351,12 @@
 
         // Check if this URL slug exists in booking-urls.json
         const slug = url.replace('https://meet-', '').replace('.britishprogress.org/', '');
-        console.log('[DEBUG] slug:', slug, 'found:', bookingUrls[slug]);
         if (bookingUrls[slug]) {
           iframe.removeAttribute('srcdoc');
           iframe.src = bookingUrls[slug];
         } else {
           iframe.removeAttribute('src');
           iframe.srcdoc = buildEmailDraftSrcdoc(getEmailParts());
-          console.log('[DEBUG] srcdoc set, length:', iframe.srcdoc.length);
         }
         placeholder.classList.add('hidden');
         iframe.classList.remove('hidden');
