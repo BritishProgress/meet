@@ -183,7 +183,7 @@
 
     .page-intro {
       text-align: center;
-      padding: 3rem 1.5rem 1.5rem;
+      padding: 3rem 1.5rem 0;
       max-width: 600px;
     }
 
@@ -208,7 +208,7 @@
       gap: 0.75rem;
       max-width: 860px;
       width: 100%;
-      padding: 1rem 1.5rem;
+      padding: 27px 1.5rem;
     }
 
     .member-card {
@@ -1116,20 +1116,20 @@
 
     const imgBase = "https://britishprogress.org/_next/image?w=828&q=75&url=%2Fapi%2Fmedia%2Ffile%2F";
     const team = [
-      { first: "David", last: "Lawrence", role: "Co-founder", img: "PTAIT_20250305_9225.jpg" },
-      { first: "Julia", last: "Willemyns", role: "Co-founder", img: "julia-willemyns-1.webp" },
-      { first: "Maxx", last: "Turing", role: "COO", img: "maxx-turing-2025.png" },
-      { first: "Pedro", last: "Serôdio", role: "Chief Economist", img: "PTAIT_20250305_9117.jpg" },
-      { first: "Andrew", last: "Bennett", role: "Head of Special Projects", img: "PTAIT_20250305_9149.jpg" },
-      { first: "Freddie", last: "Poser", role: "Head of Product", img: "UKDayOne_Mar25_1_Landscape.jpg" },
-      { first: "Ed", last: "Hezlet", role: "Head of Energy", img: "1759309318363.webp" },
-      { first: "Alys", last: "Key", role: "Editor", img: "alys.webp" },
-      { first: "Kane", last: "Emerson", role: "Head of Communications", img: "PTAIT_20250305_9176%20(1).jpg" },
-      { first: "Tom", last: "Blake", role: "Policy Fellow — AI & Tech", img: "PTAIT_20250305_9284.jpg" },
-      { first: "Ezra", last: "Cohen", role: "Policy Fellow", img: "Ezra%20Cohen%20Headshot.webp" },
-      { first: "Matthew", last: "Stubbs", role: "Research & Data Analyst", img: "1730069043956.jpg" },
-      { first: "Esther", last: "Cain", role: "Operations Associate", img: "Esther%20C%20-%20headshot%20(3).webp" },
-      { first: "Matthew", last: "Grant", role: "Policy Fellow", img: "1764611598563%20(1).webp" },
+      { first: "David", last: "Lawrence", role: "Co-founder", img: "PTAIT_20250305_9225.jpg", email: "david@britishprogress.org" },
+      { first: "Julia", last: "Willemyns", role: "Co-founder", img: "julia-willemyns-1.webp", email: "julia@britishprogress.org" },
+      { first: "Maxx", last: "Turing", role: "COO", img: "maxx-turing-2025.png", email: "maxx@britishprogress.org" },
+      { first: "Pedro", last: "Serôdio", role: "Chief Economist", img: "PTAIT_20250305_9117.jpg", email: "pedro@britishprogress.org" },
+      { first: "Andrew", last: "Bennett", role: "Head of Special Projects", img: "PTAIT_20250305_9149.jpg", email: "andrew@britishprogress.org" },
+      { first: "Freddie", last: "Poser", role: "Head of Product", img: "UKDayOne_Mar25_1_Landscape.jpg", email: "freddie@britishprogress.org" },
+      { first: "Ed", last: "Hezlet", role: "Head of Energy", img: "1759309318363.webp", email: "ed@britishprogress.org" },
+      { first: "Alys", last: "Key", role: "Editor", img: "alys.webp", email: "alys@britishprogress.org" },
+      { first: "Kane", last: "Emerson", role: "Head of Communications", img: "PTAIT_20250305_9176%20(1).jpg", email: "kane@britishprogress.org" },
+      { first: "Tom", last: "Blake", role: "Policy Fellow - AI & Technology", img: "PTAIT_20250305_9284.jpg", email: "tom@britishprogress.org" },
+      { first: "Ezra", last: "Cohen", role: "Policy Fellow", img: "Ezra%20Cohen%20Headshot.webp", email: "ezra@britishprogress.org" },
+      { first: "Matthew", last: "Stubbs", role: "Research & Data Analyst", img: "1730069043956.jpg", email: "matthew.stubbs@britishprogress.org" },
+      { first: "Esther", last: "Cain", role: "Operations Associate", img: "Esther%20C%20-%20headshot%20(3).webp", email: "esther@britishprogress.org" },
+      { first: "Matthew", last: "Grant", role: "Policy Fellow", img: "1764611598563%20(1).webp", email: "matthew.grant@britishprogress.org" },
     ];
 
     const selected = new Set();
@@ -1436,15 +1436,18 @@
       else if (selectedMethod === 'call' && selectedCallType === 'phone') methodText = 'phone call';
       else if (selectedMethod === 'call' && selectedCallType === 'video') methodText = 'video call';
 
+      const cc = [...selected].sort((a, b) => a - b).map(i => team[i].email).join(', ');
+
       return {
         to: 'office@britishprogress.org',
+        cc: cc,
         subject: `Meeting Request \u2014 ${methodText} with ${nameList}`,
         body: `Hi,\n\nI'd like to request ${/^[aeiou]/i.test(methodText) ? 'an' : 'a'} ${methodText} with ${nameList}.\n\nMy preferred times are:\n- [Please add your preferred date/time options here]\n\nThank you`
       };
     }
 
     function buildEmailUrl(parts) {
-      return `https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(parts.to)}&su=${encodeURIComponent(parts.subject)}&body=${encodeURIComponent(parts.body)}`;
+      return `https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(parts.to)}&cc=${encodeURIComponent(parts.cc)}&su=${encodeURIComponent(parts.subject)}&body=${encodeURIComponent(parts.body)}`;
     }
 
     function buildEmailDraftSrcdoc(parts) {
@@ -1468,11 +1471,12 @@
         '<div class="draft">' +
         '<div class="draft-header">' +
         '<div class="draft-row"><span class="draft-label">To:<\/span><span class="draft-value">' + parts.to + '<\/span><\/div>' +
+        '<div class="draft-row"><span class="draft-label">Cc:<\/span><span class="draft-value">' + parts.cc + '<\/span><\/div>' +
         '<div class="draft-row"><span class="draft-label">Subject:<\/span><span class="draft-value">' + parts.subject + '<\/span><\/div>' +
         '<\/div>' +
         '<div class="draft-body">' + bodyHtml + '<\/div>' +
         '<div class="draft-footer">' +
-        '<a class="send-btn" href="' + emailUrl + '" target="_blank">Send Email<\/a>' +
+        '<a class="send-btn" href="' + emailUrl + '" onclick="window.open(this.href,\'_blank\',\'width=680,height=700\');return false;">Send Email<\/a>' +
         '<span class="hint">Opens a pre-filled email draft<\/span>' +
         '<\/div>' +
         '<\/div>' +
