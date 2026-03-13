@@ -129,7 +129,7 @@
       line-height: 1.4;
       pointer-events: none;
       transform: translateY(-100%);
-      transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+      transition: transform 0.65s cubic-bezier(0.22, 0.61, 0.36, 1);
       z-index: 499;
     }
 
@@ -875,8 +875,14 @@
     }
 
     .selected-person {
-      flex: 0 1 calc((100% - 1.5rem) / 3);
+      flex: 0 0 calc((min(860px, 100vw) - 4.5rem) / 3);
       min-width: 0;
+    }
+
+    .selected-people.compact {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
     }
 
     .selected-people.compact .selected-person {
@@ -898,6 +904,16 @@
     .selected-people.compact .selected-person .role {
       display: none;
     }
+
+    .selected-people.three-up .selected-person {
+      flex: 0 1 calc((100% - 1.5rem) / 3);
+    }
+
+    .selected-people.three-up .selected-person img {
+      width: 50px;
+      height: 50px;
+    }
+
 
     .selected-person {
       background: #e6fce9;
@@ -1836,6 +1852,8 @@
       const peopleContainer = document.getElementById('selectedPeople');
       peopleContainer.innerHTML = '';
       peopleContainer.classList.toggle('compact', selectedCards.length > 3);
+      peopleContainer.classList.toggle('three-up', selectedCards.length === 3);
+      const isThreeUp = selectedCards.length === 3;
       selectedCards.forEach(i => {
         const m = team[i];
         const div = document.createElement('div');
@@ -1892,7 +1910,7 @@
         newH1.style.transform = `translate(${h1dx}px, ${h1dy}px)`;
         newH1.style.transition = 'none';
         requestAnimationFrame(() => {
-          newH1.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)';
+          newH1.style.transition = 'transform 0.65s cubic-bezier(0.22, 0.61, 0.36, 1)';
           newH1.style.transform = 'translate(0, 0)';
           newH1.addEventListener('transitionend', () => {
             newH1.style.transform = '';
@@ -1917,7 +1935,7 @@
           card.style.transition = 'none';
 
           requestAnimationFrame(() => {
-            card.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)';
+            card.style.transition = 'transform 0.65s cubic-bezier(0.22, 0.61, 0.36, 1)';
             card.style.transform = 'translate(0, 0) scale(1, 1)';
             card.addEventListener('transitionend', () => {
               card.style.transform = '';
@@ -2000,8 +2018,18 @@
           }
 
           // FLIP selected cards back
+          const wasThreeUp = startPositions[Object.keys(startPositions)[0]] && selected.size === 3;
           [...selected].forEach(i => {
             const card = grid.children[i];
+            const img = card.querySelector('.avatar');
+
+            // Temporarily match stage 2 avatar size so FLIP starts visually correct
+            if (wasThreeUp && img) {
+              img.style.width = '50px';
+              img.style.height = '50px';
+              img.style.transition = 'none';
+            }
+
             const endRect = card.getBoundingClientRect();
             const endTop = endRect.top + window.scrollY;
             const start = startPositions[i];
@@ -2016,12 +2044,21 @@
             card.style.transition = 'none';
 
             requestAnimationFrame(() => {
-              card.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)';
+              card.style.transition = 'transform 0.65s cubic-bezier(0.22, 0.61, 0.36, 1)';
               card.style.transform = 'translate(0, 0) scale(1, 1)';
               card.addEventListener('transitionend', () => {
                 card.style.transform = '';
                 card.style.transition = '';
                 card.style.transformOrigin = '';
+                // After FLIP, grow avatar back to 70px
+                if (wasThreeUp && img) {
+                  img.style.transition = 'width 0.4s ease, height 0.4s ease';
+                  img.style.width = '';
+                  img.style.height = '';
+                  img.addEventListener('transitionend', () => {
+                    img.style.transition = '';
+                  }, { once: true });
+                }
               }, { once: true });
             });
           });
@@ -2186,6 +2223,7 @@
       const peopleContainer = document.getElementById('selectedPeople');
       peopleContainer.innerHTML = '';
       peopleContainer.classList.toggle('compact', indices.length > 3);
+      peopleContainer.classList.toggle('three-up', indices.length === 3);
       indices.sort((a, b) => a - b).forEach(i => {
         const m = team[i];
         const div = document.createElement('div');
