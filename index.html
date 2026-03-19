@@ -862,6 +862,65 @@
       top: 100px;
     }
 
+    .iframe-loader {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 750px;
+      background: #fff;
+      border: 1.5px solid #e5e0cc;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+      transition: opacity 0.6s ease;
+      position: sticky;
+      top: 100px;
+    }
+
+    .iframe-loader.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .loader-spinner {
+      width: 44px;
+      height: 44px;
+      border: 3px solid #d0e8dc;
+      border-top-color: #0A4938;
+      border-radius: 50%;
+      animation: loader-spin 0.8s linear infinite;
+    }
+
+    .loader-text {
+      margin: 16px 0 0;
+      font-size: 0.85rem;
+      color: #999;
+      letter-spacing: 0.05em;
+    }
+
+    .loader-dots {
+      position: absolute;
+      left: 100%;
+      overflow: hidden;
+      width: 1.5em;
+      animation: loader-dots 1.2s steps(4, end) infinite;
+    }
+
+    @keyframes loader-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes loader-dots {
+      0%, 12% { width: 0; }
+      33% { width: 0.5em; }
+      66% { width: 1em; }
+      99% { width: 1.5em; }
+    }
+
     .iframe-placeholder.hidden {
       display: none;
     }
@@ -1386,8 +1445,12 @@
         <div class="generated-url" id="generatedUrl" onclick="copyUrl()" style="display:none !important"><span class="url-text"></span><svg class="copy-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 5.5V3.5C10.5 2.67 9.83 2 9 2H3.5C2.67 2 2 2.67 2 3.5V9C2 9.83 2.67 10.5 3.5 10.5H5.5" stroke="currentColor" stroke-width="1.5"/></svg></div>
         <a class="book-btn hidden" id="bookBtn" href="#" target="_blank" rel="noopener" style="display:none !important">Book Meeting</a>
       </div>
-      <div class="stage2-right" id="stage2Right">
+      <div class="stage2-right" id="stage2Right" style="position:relative;">
         <div class="iframe-placeholder" id="iframePlaceholder">Select a meeting method to get started</div>
+        <div class="iframe-loader hidden" id="iframeLoader">
+          <div class="loader-spinner"></div>
+          <p class="loader-text"><span style="position:relative;display:inline-block;">Loading<span class="loader-dots">...</span></span></p>
+        </div>
         <iframe class="booking-iframe hidden" id="bookingIframe" src="about:blank" scrolling="yes"></iframe>
       </div>
   </div>
@@ -1412,6 +1475,20 @@
   </footer>
 
   <script>
+    function showIframeLoader() {
+      const loader = document.getElementById('iframeLoader');
+      loader.classList.remove('hidden');
+      loader.style.opacity = '';
+      loader.style.display = '';
+    }
+    function hideIframeLoader() {
+      const loader = document.getElementById('iframeLoader');
+      setTimeout(function() {
+        loader.style.opacity = '0';
+        setTimeout(function() { loader.style.display = 'none'; }, 600);
+      }, 400);
+    }
+
     // Load booking URL config
     let bookingUrls = {};
     const bookingUrlsReady = fetch('booking-urls.json').then(r => r.json()).then(data => { bookingUrls = data; }).catch(() => {});
@@ -1680,12 +1757,15 @@
 
         // Check if this URL slug exists in booking-urls.json
         const slug = url.replace('https://meet-', '').replace('.britishprogress.org/', '');
+        showIframeLoader();
         if (bookingUrls[slug]) {
           iframe.removeAttribute('srcdoc');
           iframe.src = bookingUrls[slug];
+          iframe.onload = hideIframeLoader;
         } else {
           iframe.removeAttribute('src');
           iframe.srcdoc = buildEmailDraftSrcdoc(getEmailParts());
+          iframe.onload = hideIframeLoader;
         }
         placeholder.classList.add('hidden');
         iframe.classList.remove('hidden');
@@ -1887,7 +1967,9 @@
         document.querySelector('.method-step').classList.add('hidden');
         document.getElementById('iframePlaceholder').classList.add('hidden');
         const iframe = document.getElementById('bookingIframe');
+        showIframeLoader();
         iframe.src = directUrl;
+        iframe.onload = hideIframeLoader;
         iframe.classList.remove('hidden');
       }
 
@@ -1996,6 +2078,7 @@
         document.getElementById('generatedUrl').classList.remove('visible');
         document.getElementById('bookingIframe').src = 'about:blank';
         document.getElementById('bookingIframe').onload = null;
+        document.getElementById('iframeLoader').classList.add('hidden');
         if (window._iframeTimeout) clearTimeout(window._iframeTimeout);
         document.getElementById('stage2Right').classList.remove('visible');
         stage2El.classList.remove('has-iframe');
@@ -2244,7 +2327,9 @@
         document.querySelector('.method-step').classList.add('hidden');
         document.getElementById('iframePlaceholder').classList.add('hidden');
         const iframe = document.getElementById('bookingIframe');
+        showIframeLoader();
         iframe.src = directUrl;
+        iframe.onload = hideIframeLoader;
         iframe.classList.remove('hidden');
       }
 
