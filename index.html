@@ -1510,7 +1510,6 @@
       { first: "Julia", last: "Willemyns", role: "Co-founder", img: "julia-willemyns-1.webp", email: "julia@britishprogress.org" },
       { first: "Maxx", last: "Turing", role: "COO", img: "maxx-turing-2025.png", email: "maxx@britishprogress.org" },
       { first: "Pedro", last: "Serôdio", role: "Chief Economist", img: "PTAIT_20250305_9117.jpg", email: "pedro@britishprogress.org" },
-      { first: "Freddie", last: "Poser", role: "Head of Product", img: "UKDayOne_Mar25_1_Landscape.jpg", email: "freddie@britishprogress.org" },
       { first: "Ed", last: "Hezlet", role: "Head of Energy", img: "1759309318363.webp", email: "ed@britishprogress.org" },
       { first: "Alys", last: "Key", role: "Editor", img: "alys.webp", email: "alys@britishprogress.org" },
       { first: "Kane", last: "Emerson", role: "Head of Communications", img: "PTAIT_20250305_9176%20(1).jpg", email: "kane@britishprogress.org" },
@@ -1526,19 +1525,18 @@
 
     // Suggestion rules: ordered by likelihood of being in a meeting together
     const suggestions = {
-      0: [1, 3, 5, 7, 9, 4],   // David → Julia, Pedro, Ed, Kane, Ezra, Freddie
-      1: [0, 2, 6, 8],          // Julia → David, Maxx, Alys, Tom
-      2: [1, 11, 0, 8],         // Maxx → Julia, Esther, David, Tom
-      3: [0, 10, 1],             // Pedro → David, Matthew S, Julia
-      4: [0, 5, 1],              // Freddie → David, Ed, Julia
-      5: [0, 4, 1],              // Ed → David, Freddie, Julia
-      6: [1, 0],                 // Alys → Julia, David
-      7: [0, 1, 6],              // Kane → David, Julia, Alys
-      8: [1, 2, 0],              // Tom → Julia, Maxx, David
-      9: [0, 12, 1],             // Ezra → David, Matthew G, Julia
-      10: [3, 0],                // Matthew S → Pedro, David
-      11: [2, 1],                // Esther → Maxx, Julia
-      12: [0, 9, 1],             // Matthew G → David, Ezra, Julia
+      0: [1, 3, 4, 6, 8],       // David → Julia, Pedro, Ed, Kane, Ezra
+      1: [0, 2, 5, 7],          // Julia → David, Maxx, Alys, Tom
+      2: [1, 10, 0, 7],         // Maxx → Julia, Esther, David, Tom
+      3: [0, 9, 1],              // Pedro → David, Matthew S, Julia
+      4: [0, 1],                 // Ed → David, Julia
+      5: [1, 0],                 // Alys → Julia, David
+      6: [0, 1, 5],              // Kane → David, Julia, Alys
+      7: [1, 2, 0],              // Tom → Julia, Maxx, David
+      8: [0, 11, 1],             // Ezra → David, Matthew G, Julia
+      9: [3, 0],                 // Matthew S → Pedro, David
+      10: [2, 1],                // Esther → Maxx, Julia
+      11: [0, 8, 1],             // Matthew G → David, Ezra, Julia
     };
 
     function getSuggested() {
