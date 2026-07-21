@@ -19,13 +19,9 @@ Exception: Matthew Grant uses `matthew.grant@britishprogress.org` (since `matthe
    12: [0, 1, 7],  // Name → David, Julia, Tom
    ```
 
-4. **`booking-urls.json`**: Run this Python snippet to generate all combinations (238 entries for a 13-person team), then rebuild the file in canonical order:
-   ```python
-   # Add new slug to the slugs list, then run:
-   slugs = ['david','julia','maxx','pedro','ed','alys','kane','tom','ezra','matthew-s','esther','matthew-g','martha']  # update as needed
-   # See the script used when adding Martha for the full logic
-   ```
-   The script adds solo (4 suffixes), pairs (3 suffixes each), and trios (3 suffixes each), all with empty string values.
+4. **`booking-urls.json`**: Regenerate the full file (see [Regenerating booking-urls.json](#regenerating-booking-urlsjson)) with the updated slug list.
+
+5. **Validate** (see [Validating after any roster change](#validating-after-any-roster-change)).
 
 ## Removing a team member
 
@@ -33,13 +29,61 @@ Exception: Matthew Grant uses `matthew.grant@britishprogress.org` (since `matthe
 
 2. **`index.html` — suggestions**: Delete their entry from `suggestions`, remove their index from all other entries' arrays, then **renumber** all indices that were higher than theirs (each decrements by 1). Update the comments too.
 
-3. **`booking-urls.json`**: Run Python to remove all keys containing their first name slug:
-   ```python
-   cleaned = {k: v for k, v in data.items() if 'firstname' not in k}
-   ```
+3. **`booking-urls.json`**: Regenerate the full file (see [Regenerating booking-urls.json](#regenerating-booking-urlsjson)) with the departing person's slug removed. Do **not** filter by substring (`'tom' in k`) — that also matches `tom-blake`/`tom-barrowcliff`; regenerate from the slug list instead.
+
+4. **Validate** (see [Validating after any roster change](#validating-after-any-roster-change)).
 
 ## Slug rules
 
 - Each person's URL slug is their lowercase first name (e.g. `david`, `martha`).
 - If two people share a first name, the slug is `firstname-lastinitial` (e.g. `matthew-s`, `matthew-g`).
-- The `getSlug()` function in `index.html` handles this automatically.
+- If the last initial *also* collides (e.g. Tom **B**lake vs Tom **B**arrowcliff), the slug falls back to the full surname (`tom-blake`, `tom-barrowcliff`).
+- The `getSlug()` function in `index.html` handles all of this automatically — always derive slugs by running it, never hand-write them.
+
+## Regenerating booking-urls.json
+
+The file maps every 1-, 2-, and 3-person combination to a booking URL (mostly empty strings; a few are real Google Calendar / Calendly links). It is fully generated — regenerate it whenever the roster or a slug changes, **preserving existing non-empty values**:
+
+```python
+import json, itertools, collections
+old = json.load(open('booking-urls.json'))
+# Slugs in TEAM-INDEX order (must match index.html's team array order, using getSlug's output):
+slugs = ['david','julia','pedro','alys','kane','tom-blake','ezra','matthew-s',
+         'esther','matthew-g','martha','shaamini','bel','tom-barrowcliff','adash']
+SOLO  = ['80-strand','in-person','video-call','phone-call']  # solo: 4 suffixes
+MULTI = ['80-strand','in-person','video-call']               # pairs/trios: 3 suffixes (no phone-call)
+def base(c): return c[0] if len(c)==1 else '-'.join(c[:-1]) + '-and-' + c[-1]
+entries = []
+for r in (1,2,3):
+    for c in itertools.combinations(slugs, r):   # combinations preserve index order
+        entries.append((base(c), SOLO if r==1 else MULTI))
+entries.sort(key=lambda e: e[0])                 # canonical order: bases sorted as strings
+result = collections.OrderedDict((f'{b}-{s}', '') for b, sufs in entries for s in sufs)
+for k, v in old.items():                         # carry over real booking links
+    if v and k in result: result[k] = v
+json.dump(result, open('booking-urls.json','w'), indent=2, ensure_ascii=False)
+open('booking-urls.json','a').write('\n')
+```
+
+Sizes: an n-person team yields n·4 + C(n,2)·3 + C(n,3)·3 keys (e.g. 15 people → 1740).
+
+## Validating after any roster change
+
+`getSlug()` and `suggestions` can silently drift out of sync with the `team` array (an earlier removal left a stale entry and misaligned indices). After any add/remove/rename, run this check and confirm it passes:
+
+```bash
+node -e "
+const html=require('fs').readFileSync('index.html','utf8');
+const team=eval(html.match(/const team = (\[[\s\S]*?\]);/)[1]);
+const suggestions=eval('('+html.match(/const suggestions = (\{[\s\S]*?\});/)[1]+')');
+const getSlug=i=>{const m=team[i],f=m.first.toLowerCase();if(!team.some((x,j)=>j!==i&&x.first===m.first))return f;const li=m.last[0].toLowerCase();const col=team.some((x,j)=>j!==i&&x.first===m.first&&x.last[0].toLowerCase()===li);return f+'-'+(col?m.last.toLowerCase():li);};
+const slugs=team.map((_,i)=>getSlug(i));
+console.assert(new Set(slugs).size===slugs.length,'DUPLICATE SLUGS');
+const keys=Object.keys(suggestions).map(Number);
+console.assert(keys.length===team.length&&keys.every(k=>k>=0&&k<team.length),'SUGGESTIONS KEYS != team indices');
+for(const [k,arr] of Object.entries(suggestions))for(const v of arr)console.assert(v>=0&&v<team.length&&String(v)!==k,'BAD SUGGESTION REF '+k+'->'+v);
+console.log('team',team.length,'slugs OK, suggestions OK');
+"
+```
+
+Also confirm `booking-urls.json` key count matches the formula above and contains no keys for a removed slug.

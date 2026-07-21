@@ -1508,18 +1508,19 @@
     const team = [
       { first: "David", last: "Lawrence", role: "Co-founder", img: "PTAIT_20250305_9225.jpg", email: "david@britishprogress.org" },
       { first: "Julia", last: "Willemyns", role: "Co-founder", img: "julia-willemyns-1.webp", email: "julia@britishprogress.org" },
-      { first: "Maxx", last: "Turing", role: "COO", img: "maxx-turing-2025.png", email: "maxx@britishprogress.org" },
       { first: "Pedro", last: "Serôdio", role: "Chief Economist", img: "PTAIT_20250305_9117.jpg", email: "pedro@britishprogress.org" },
       { first: "Alys", last: "Key", role: "Editor", img: "alys.webp", email: "alys@britishprogress.org" },
       { first: "Kane", last: "Emerson", role: "Head of Communications", img: "PTAIT_20250305_9176%20(1).jpg", email: "kane@britishprogress.org" },
       { first: "Tom", last: "Blake", role: "Policy Fellow - AI & Technology", img: "PTAIT_20250305_9284.jpg", email: "tom@britishprogress.org" },
       { first: "Ezra", last: "Cohen", role: "Policy Fellow", img: "Ezra%20Cohen%20Headshot.webp", email: "ezra@britishprogress.org" },
-      { first: "Matthew", last: "Stubbs", role: "Research & Data Analyst", img: "1730069043956.jpg", email: "matthew@britishprogress.org" },
+      { first: "Matthew", last: "Stubbs", role: "Economist", img: "1730069043956.jpg", email: "matthew@britishprogress.org" },
       { first: "Esther", last: "Cain", role: "Operations Associate", img: "Esther%20C%20-%20headshot%20(3).webp", email: "esther@britishprogress.org" },
       { first: "Matthew", last: "Grant", role: "Policy Fellow", img: "1764611598563%20(1).webp", email: "matthew.grant@britishprogress.org" },
       { first: "Martha", last: "Dacombe", role: "Prog. Manager: Tech & State", img: "m%20(1).webp", email: "martha@britishprogress.org" },
       { first: "Shaamini", last: "Prinja", role: "Data Engineer", img: "IMG_2242%20Small%20(3).webp", email: "shaamini@britishprogress.org" },
       { first: "Bel", last: "Guillaume", role: "Head of Partnerships & Fundraising", img: "bel.webp", email: "bel@britishprogress.org" },
+      { first: "Tom", last: "Barrowcliff", role: "Head of Operations", img: "1665475391629.webp", email: "tom.barrowcliff@britishprogress.org" },
+      { first: "Adash", last: "Herrenschmidt-Moller", role: "Policy Fellow - Biosecurity, Health", img: "adash.webp", email: "adash@britishprogress.org" },
     ];
 
     const selected = new Set();
@@ -1527,21 +1528,21 @@
 
     // Suggestion rules: ordered by likelihood of being in a meeting together
     const suggestions = {
-      0: [1, 3, 4, 6, 8],       // David → Julia, Pedro, Ed, Kane, Ezra
-      1: [0, 2, 5, 7],          // Julia → David, Maxx, Alys, Tom
-      2: [1, 10, 0, 7],         // Maxx → Julia, Esther, David, Tom
-      3: [0, 9, 1],              // Pedro → David, Matthew S, Julia
-      4: [0, 1],                 // Ed → David, Julia
-      5: [1, 0],                 // Alys → Julia, David
-      6: [0, 1, 5],              // Kane → David, Julia, Alys
-      7: [1, 2, 0],              // Tom → Julia, Maxx, David
-      8: [0, 11, 1],             // Ezra → David, Matthew G, Julia
-      9: [3, 0],                 // Matthew S → Pedro, David
-      10: [2, 1],                // Esther → Maxx, Julia
-      11: [0, 8, 1],             // Matthew G → David, Ezra, Julia
-      12: [0, 7, 1],             // Martha → David, Tom, Julia
-      13: [8, 0, 1],             // Shaamini → Matthew S, David, Julia
-      14: [0, 1, 2],             // Bel → David, Julia, Maxx
+      0: [1, 2, 4, 6],          // David → Julia, Pedro, Kane, Ezra
+      1: [0, 3, 5],             // Julia → David, Alys, Tom Blake
+      2: [0, 7, 1],             // Pedro → David, Matthew S, Julia
+      3: [1, 0],                // Alys → Julia, David
+      4: [0, 1, 3],             // Kane → David, Julia, Alys
+      5: [1, 0],                // Tom Blake → Julia, David
+      6: [0, 9, 1],             // Ezra → David, Matthew G, Julia
+      7: [2, 0],                // Matthew S → Pedro, David
+      8: [1, 0, 13],            // Esther → Julia, David, Tom Barrowcliff
+      9: [0, 6, 1],             // Matthew G → David, Ezra, Julia
+      10: [0, 5, 1],            // Martha → David, Tom Blake, Julia
+      11: [7, 0, 1],            // Shaamini → Matthew S, David, Julia
+      12: [0, 1],               // Bel → David, Julia
+      13: [0, 1, 8],            // Tom Barrowcliff → David, Julia, Esther
+      14: [0, 1, 6],            // Adash → David, Julia, Ezra
     };
 
     function getSuggested() {
@@ -1577,10 +1578,12 @@
       const firstName = member.first.toLowerCase();
       // Check if another team member shares this first name
       const hasDuplicate = team.some((m, i) => i !== index && m.first === member.first);
-      if (hasDuplicate) {
-        return firstName + "-" + member.last[0].toLowerCase();
-      }
-      return firstName;
+      if (!hasDuplicate) return firstName;
+      // Disambiguate by last initial; if that also collides, fall back to full surname
+      const lastInitial = member.last[0].toLowerCase();
+      const initialCollides = team.some((m, i) =>
+        i !== index && m.first === member.first && m.last[0].toLowerCase() === lastInitial);
+      return firstName + "-" + (initialCollides ? member.last.toLowerCase() : lastInitial);
     }
 
     function buildUrl() {
