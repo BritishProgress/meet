@@ -182,6 +182,114 @@
       border-bottom: 1px solid #FE9F1C;
     }
 
+    nav .nav-dropdown {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    nav .nav-dropdown-trigger {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+      cursor: pointer;
+      color: #0A4938;
+      font-weight: 300;
+      font-size: 16px;
+      line-height: 100%;
+      letter-spacing: 0.01em;
+      font-family: inherit;
+    }
+
+    nav .nav-dropdown-trigger:hover {
+      border-bottom: 1px solid #FE9F1C;
+    }
+
+    nav .nav-dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #FFFBEA;
+      border: 1px solid #293131;
+      min-width: 200px;
+      z-index: 600;
+      padding: 6px 0;
+      margin-top: 12px;
+    }
+
+    nav .nav-dropdown-menu:before {
+      content: "";
+      position: absolute;
+      top: -12px;
+      left: 0;
+      right: 0;
+      height: 12px;
+    }
+
+    .desktop-nav .nav-dropdown:hover .nav-dropdown-menu {
+      display: block;
+    }
+
+    nav .nav-dropdown-menu a {
+      display: block;
+      padding: 10px 18px;
+      color: #0A4938;
+      text-decoration: none;
+      font-weight: 300;
+      font-size: 15px;
+      white-space: nowrap;
+      text-align: left;
+    }
+
+    nav .nav-dropdown-menu a:hover {
+      background: #F3EED8;
+      border-bottom: none;
+    }
+
+    /* Mobile dropdown */
+    .mobile-nav .nav-dropdown {
+      flex-direction: column;
+      align-items: flex-end;
+      width: 100%;
+      display: flex;
+    }
+
+    .mobile-nav .nav-dropdown-trigger {
+      justify-content: flex-end;
+      width: 100%;
+      padding: 2px 0;
+      display: flex;
+    }
+
+    .mobile-nav .nav-dropdown-menu {
+      display: none;
+      position: static;
+      border: none;
+      border-right: 2px solid #0A4938;
+      padding: 2px 0;
+      margin-top: 2px;
+      background: transparent;
+      min-width: unset;
+      width: 100%;
+      text-align: right;
+    }
+
+    .mobile-nav .nav-dropdown.open .nav-dropdown-menu {
+      display: block;
+    }
+
+    .mobile-nav .nav-dropdown-menu a {
+      padding: 5px 10px 5px 0;
+      font-size: 14px;
+      display: block;
+      text-align: right;
+    }
+
     .burger-menu {
       display: none;
       cursor: pointer;
@@ -283,7 +391,7 @@
       grid-template-columns: repeat(3, 1fr);
       grid-auto-rows: 1fr;
       gap: 0.75rem;
-      max-width: 860px;
+      max-width: 1040px;
       width: 100%;
       padding: 27px 1.5rem;
     }
@@ -300,6 +408,7 @@
       display: flex;
       align-items: center;
       gap: 0.75rem;
+      min-width: 0;
     }
 
     .member-card:hover {
@@ -350,6 +459,9 @@
       line-height: 1.3;
       margin-bottom: 0.2rem;
       color: #283131;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .member-card .role {
@@ -358,13 +470,18 @@
       min-height: calc(2 * 0.8rem * 1.3);
       color: #283131;
       opacity: 0.55;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      overflow: hidden;
     }
 
     .booking-bar {
       position: sticky;
       bottom: 0;
       width: 100%;
-      max-width: 860px;
+      max-width: 1040px;
       padding: 1.25rem 1.5rem;
       display: flex;
       flex-direction: column;
@@ -1348,6 +1465,15 @@
     <nav class="desktop-nav">
       <ul>
         <li><a href="https://britishprogress.org/research">Research</a></li>
+        <li class="nav-dropdown">
+          <button class="nav-dropdown-trigger" aria-haspopup="true" aria-expanded="false">Projects</button>
+          <div class="nav-dropdown-menu">
+            <a href="https://scout.britishprogress.org/" target="_blank" rel="noopener noreferrer">Scout</a>
+            <a href="https://nuclear.britishprogress.org/" target="_blank" rel="noopener noreferrer">Nuclear Taskforce Tracker</a>
+            <a href="https://www.sovereignalbion.com/" target="_blank" rel="noopener noreferrer">Sovereign Albion</a>
+            <a href="https://britishprogress.org/news/fast-grants-for-british-progress-call-for-proposal" target="_blank" rel="noopener noreferrer">Fast Grants</a>
+          </div>
+        </li>
         <li><a href="https://britishprogress.org/uk-day-one">UK Day One</a></li>
         <li><a href="https://britishprogress.org/about">About</a></li>
         <li><a href="https://britishprogress.org/opportunities">Opportunities</a></li>
@@ -1366,6 +1492,15 @@
     <nav>
       <ul>
         <li><a href="https://britishprogress.org/research">Research</a></li>
+        <li class="nav-dropdown" id="mobileProjectsDropdown">
+          <button class="nav-dropdown-trigger" aria-haspopup="true" aria-expanded="false">Projects</button>
+          <div class="nav-dropdown-menu">
+            <a href="https://scout.britishprogress.org/" target="_blank" rel="noopener noreferrer">Scout</a>
+            <a href="https://nuclear.britishprogress.org/" target="_blank" rel="noopener noreferrer">Nuclear Taskforce Tracker</a>
+            <a href="https://www.sovereignalbion.com/" target="_blank" rel="noopener noreferrer">Sovereign Albion</a>
+            <a href="https://britishprogress.org/news/fast-grants-for-british-progress-call-for-proposal" target="_blank" rel="noopener noreferrer">Fast Grants</a>
+          </div>
+        </li>
         <li><a href="https://britishprogress.org/uk-day-one">UK Day One</a></li>
         <li><a href="https://britishprogress.org/about">About</a></li>
         <li><a href="https://britishprogress.org/opportunities">Opportunities</a></li>
@@ -1514,9 +1649,8 @@
       { first: "Tom", last: "Blake", role: "Policy Fellow - AI & Technology", img: "PTAIT_20250305_9284.jpg", email: "tom@britishprogress.org" },
       { first: "Ezra", last: "Cohen", role: "Policy Fellow", img: "Ezra%20Cohen%20Headshot.webp", email: "ezra@britishprogress.org" },
       { first: "Matthew", last: "Stubbs", role: "Economist", img: "1730069043956.jpg", email: "matthew@britishprogress.org" },
-      { first: "Esther", last: "Cain", role: "Operations Associate", img: "Esther%20C%20-%20headshot%20(3).webp", email: "esther@britishprogress.org" },
       { first: "Matthew", last: "Grant", role: "Policy Fellow", img: "1764611598563%20(1).webp", email: "matthew.grant@britishprogress.org" },
-      { first: "Martha", last: "Dacombe", role: "Prog. Manager: Tech & State", img: "m%20(1).webp", email: "martha@britishprogress.org" },
+      { first: "Martha", last: "Dacombe", role: "Programme Manager – Technology & State Capacity", img: "m%20(1).webp", email: "martha@britishprogress.org" },
       { first: "Shaamini", last: "Prinja", role: "Data Engineer", img: "IMG_2242%20Small%20(3).webp", email: "shaamini@britishprogress.org" },
       { first: "Bel", last: "Guillaume", role: "Head of Partnerships & Fundraising", img: "bel.webp", email: "bel@britishprogress.org" },
       { first: "Tom", last: "Barrowcliff", role: "Head of Operations", img: "1665475391629.webp", email: "tom.barrowcliff@britishprogress.org" },
@@ -1534,15 +1668,14 @@
       3: [1, 0],                // Alys → Julia, David
       4: [0, 1, 3],             // Kane → David, Julia, Alys
       5: [1, 0],                // Tom Blake → Julia, David
-      6: [0, 9, 1],             // Ezra → David, Matthew G, Julia
+      6: [0, 8, 1],             // Ezra → David, Matthew G, Julia
       7: [2, 0],                // Matthew S → Pedro, David
-      8: [1, 0, 13],            // Esther → Julia, David, Tom Barrowcliff
-      9: [0, 6, 1],             // Matthew G → David, Ezra, Julia
-      10: [0, 5, 1],            // Martha → David, Tom Blake, Julia
-      11: [7, 0, 1],            // Shaamini → Matthew S, David, Julia
-      12: [0, 1],               // Bel → David, Julia
-      13: [0, 1, 8],            // Tom Barrowcliff → David, Julia, Esther
-      14: [0, 1, 6],            // Adash → David, Julia, Ezra
+      8: [0, 6, 1],             // Matthew G → David, Ezra, Julia
+      9: [0, 5, 1],             // Martha → David, Tom Blake, Julia
+      10: [7, 0, 1],            // Shaamini → Matthew S, David, Julia
+      11: [0, 1],               // Bel → David, Julia
+      12: [0, 1],               // Tom Barrowcliff → David, Julia
+      13: [0, 1, 6],            // Adash → David, Julia, Ezra
     };
 
     function getSuggested() {
@@ -2180,6 +2313,17 @@
       mobileNav.classList.toggle('open');
     });
 
+    // Mobile Projects dropdown toggle
+    (function () {
+      const d = document.getElementById('mobileProjectsDropdown');
+      if (!d) return;
+      const t = d.querySelector('.nav-dropdown-trigger');
+      t.addEventListener('click', function () {
+        const open = d.classList.toggle('open');
+        t.setAttribute('aria-expanded', open);
+      });
+    })();
+
     // Render team grid
     const grid = document.getElementById("teamGrid");
     team.forEach((member, index) => {
@@ -2205,6 +2349,30 @@
         reorderGrid();
       });
       grid.appendChild(card);
+    });
+
+    // Shrink over-long names just enough to keep them on a single line
+    // (cards are equal width, so long names would otherwise clip with an ellipsis)
+    function fitCardNames() {
+      grid.querySelectorAll(".member-card .name").forEach(el => {
+        el.style.fontSize = "";
+        let size = parseFloat(getComputedStyle(el).fontSize);
+        const min = 11; // px floor
+        let guard = 0;
+        while (el.scrollWidth > el.clientWidth && size > min && guard < 40) {
+          size -= 0.5;
+          el.style.fontSize = size + "px";
+          guard++;
+        }
+      });
+    }
+    requestAnimationFrame(() => requestAnimationFrame(fitCardNames));
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitCardNames);
+    window.addEventListener("load", fitCardNames);
+    let fitTimer;
+    window.addEventListener("resize", () => {
+      clearTimeout(fitTimer);
+      fitTimer = setTimeout(fitCardNames, 150);
     });
 
     function reorderGrid() {
