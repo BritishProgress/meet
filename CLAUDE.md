@@ -19,9 +19,11 @@ Exception: Matthew Grant uses `matthew.grant@britishprogress.org` (since `matthe
    12: [0, 1, 7],  // Name → David, Julia, Tom
    ```
 
-4. **`booking-urls.json`**: Regenerate the full file (see [Regenerating booking-urls.json](#regenerating-booking-urlsjson)) with the updated slug list.
+4. **`index.html` — directBookingOverrides**: Only if this person needs a direct-load booking link (skips method selection). This map is keyed by **team index** — add an entry for the new index. If they don't need one, leave it alone.
 
-5. **Validate** (see [Validating after any roster change](#validating-after-any-roster-change)).
+5. **`booking-urls.json`**: Regenerate the full file (see [Regenerating booking-urls.json](#regenerating-booking-urlsjson)) with the updated slug list.
+
+6. **Validate** (see [Validating after any roster change](#validating-after-any-roster-change)).
 
 ## Removing a team member
 
@@ -29,9 +31,11 @@ Exception: Matthew Grant uses `matthew.grant@britishprogress.org` (since `matthe
 
 2. **`index.html` — suggestions**: Delete their entry from `suggestions`, remove their index from all other entries' arrays, then **renumber** all indices that were higher than theirs (each decrements by 1). Update the comments too.
 
-3. **`booking-urls.json`**: Regenerate the full file (see [Regenerating booking-urls.json](#regenerating-booking-urlsjson)) with the departing person's slug removed. Do **not** filter by substring (`'tom' in k`) — that also matches `tom-blake`/`tom-barrowcliff`; regenerate from the slug list instead.
+3. **`index.html` — directBookingOverrides**: This map is keyed by **team index**, so a removal silently reattaches an override to whoever shifts into that slot (this is how Maxx's Calendly link ended up on Pedro's page). Delete the departing person's entry, then **renumber** all keys higher than theirs (each decrements by 1). Update the comments too.
 
-4. **Validate** (see [Validating after any roster change](#validating-after-any-roster-change)).
+4. **`booking-urls.json`**: Regenerate the full file (see [Regenerating booking-urls.json](#regenerating-booking-urlsjson)) with the departing person's slug removed. Do **not** filter by substring (`'tom' in k`) — that also matches `tom-blake`/`tom-barrowcliff`; regenerate from the slug list instead.
+
+5. **Validate** (see [Validating after any roster change](#validating-after-any-roster-change)).
 
 ## Slug rules
 

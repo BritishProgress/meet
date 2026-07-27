@@ -1631,7 +1631,6 @@
     // Direct booking overrides: skip method selection and load iframe directly
     // Key: comma-separated sorted team indices, Value: iframe URL
     const directBookingOverrides = {
-      '2': 'https://calendly.com/maxx-centre-for-british-progress/30min', // Maxx only
     };
 
     function getDirectBookingUrl() {
@@ -2424,7 +2423,7 @@
       const methodParam = queryStr ? new URLSearchParams(queryStr).get('method') : null;
 
       // Parse slugs: split on "-and-" first, then split remaining on "-"
-      // e.g. "david-julia-and-maxx" → ["david", "julia", "maxx"]
+      // e.g. "david-julia-and-kane" → ["david", "julia", "kane"]
       // e.g. "matthew-s-and-matthew-g" → ["matthew-s", "matthew-g"]
       const parts = hash.split('-and-');
       const slugs = [];
